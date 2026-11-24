@@ -1131,17 +1131,35 @@
         signedBox.classList.add('hidden');
         signInSec.classList.remove('hidden');
         const cid = getGoogleClientId();
+        const wrap = document.getElementById('googleBtnWrap');
         if (cid && typeof google !== 'undefined' && google.accounts && google.accounts.id) {
           fallbackNote.classList.add('hidden');
-          const wrap = document.getElementById('googleBtnWrap');
           wrap.innerHTML = '';
           google.accounts.id.initialize({
             client_id: cid,
             callback: handleGoogleCredentialResponse
           });
           google.accounts.id.renderButton(wrap, { theme: 'filled_blue', size: 'large', width: 320, text: 'signin_with', locale: 'zh_HK' });
+        } else if (cid) {
+          fallbackNote.classList.add('hidden');
+          wrap.innerHTML = '<div class="text-xs text-[#9aa7b8] py-2 font-mono-code">正在載入 Google 帳戶登入按鈕...</div>';
+          if (!window._gsiRetryTimer) {
+            let tries = 0;
+            window._gsiRetryTimer = setInterval(() => {
+              tries++;
+              if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+                clearInterval(window._gsiRetryTimer);
+                window._gsiRetryTimer = null;
+                updateGmailModalUI();
+              } else if (tries >= 40) {
+                clearInterval(window._gsiRetryTimer);
+                window._gsiRetryTimer = null;
+                wrap.innerHTML = '<div class="text-xs text-[#fda4af] py-2">無法載入 Google 登入服務，請檢查網絡或改用瀏覽器開啟 GitHub Pages 網址。</div>';
+              }
+            }, 200);
+          }
         } else {
-          document.getElementById('googleBtnWrap').innerHTML = '';
+          wrap.innerHTML = '';
           fallbackNote.classList.remove('hidden');
           if (user && user.email) document.getElementById('loginEmailInput').value = user.email;
         }
@@ -2565,6 +2583,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
 
       switchMode('home');
       
+      window.addEventListener('load', () => { if (!state.student) updateGmailModalUI(); });
       initPyodideEngine();
     });
   </script>
