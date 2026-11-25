@@ -2050,23 +2050,43 @@ def _hkdse_check_code(code_str, forbidden_calls):
       state.pyodide.globals.set('_user_stdin', stdinStr || '');
       state.pyodide.globals.set('_check_file', checkFile || '');
       const runner = `
-import io, os as _os, contextlib, traceback
+import io, os as _os, sys as _sys, time as _time, contextlib
 _lines = _user_stdin.splitlines()
 _it = iter(_lines)
+_eof_cnt = 0
 def _fake_input(prompt=""):
+    global _eof_cnt
     try:
         return next(_it)
     except StopIteration:
+        _eof_cnt += 1
+        if _eof_cnt > 3:
+            raise EOFError("測試輸入已用盡（請檢查 input() 次數或 while 終止條件，避免無限循環）。")
         return ""
 _buf = io.StringIO()
 _err = ""
+_steps = 0
+_MAX_STEPS = 25000
+_t0 = _time.monotonic()
+def _loop_guard(frame, event, arg):
+    global _steps
+    if event == "line":
+        _steps += 1
+        if _steps > _MAX_STEPS or (_steps % 500 == 0 and (_time.monotonic() - _t0) > 2.0):
+            raise RuntimeError("程式執行步數超過安全上限（疑似無限循環 Infinite Loop），已自動中止！請檢查 while 條件及變量更新。")
+    return _loop_guard
 try:
     _ns = {"input": _fake_input}
+    _sys.settrace(_loop_guard)
     with contextlib.redirect_stdout(_buf):
         exec(compile(_user_code, "<student.py>", "exec"), _ns)
 except Exception as e:
     _err = f"{type(e).__name__}: {e}"
+finally:
+    _sys.settrace(None)
 _final_out = _buf.getvalue()
+if len(_final_out) > 20000:
+    _final_out = _final_out[:20000] + "\n...（輸出過長已截斷）"
 if _check_file and not _err:
     if _os.path.exists(_check_file):
         with open(_check_file, "r", encoding="utf-8") as _cf:
