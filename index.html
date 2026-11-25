@@ -1269,8 +1269,9 @@
         return;
       }
       const email = String(info.email).trim().toLowerCase();
-      const dom = getAllowedDomain().trim().toLowerCase();
-      if (dom && !email.endsWith('@' + dom)) {
+      const dom = (getAllowedDomain() || 'frcss.edu.hk').trim().toLowerCase();
+      const whitelistName = ALLOWED_STUDENT_WHITELIST[email] || '';
+      if (dom && !email.endsWith('@' + dom) && !whitelistName) {
         errEl.textContent = `請使用學校帳戶（@${dom}）登入。`;
         errEl.classList.remove('hidden');
         return;
@@ -1279,7 +1280,7 @@
       try { sessionStorage.setItem('hkdse_py_id_token', response.credential || ''); } catch (e) {}
       pendingGoogleUser = {
         email,
-        name: info.name || email.split('@')[0],
+        name: whitelistName || info.name || email.split('@')[0],
         picture: info.picture || '',
         verifiedGoogle: true,
         idToken: response.credential || '',
@@ -1292,7 +1293,7 @@
       const cloud = await loadCloudProgressByEmail(email);
       const cls = isTeacherEmail ? 'TEACHER' : ((cloud && cloud._found && cloud.cls) ? cloud.cls : '');
       const no = isTeacherEmail ? '00' : ((cloud && cloud._found && cloud.no) ? cloud.no : '');
-      const displayName = info.name || ((cloud && cloud._found && cloud.name) ? cloud.name : email.split('@')[0]);
+      const displayName = whitelistName || info.name || ((cloud && cloud._found && cloud.name) ? cloud.name : email.split('@')[0]);
 
       const profile = {
         id: email,
@@ -1387,6 +1388,7 @@
       return { total: items.length, done, cleared: done === items.length && items.length > 0 };
     }
     const TEACHER_EMAILS = ['cot@frcss.edu.hk'];
+    const ALLOWED_STUDENT_WHITELIST = { 'co.zoee@gmail.com': '周同學' };
     function isTeacherUser() {
       return Boolean(
         state.student &&
@@ -2747,7 +2749,7 @@
 
 
     // === Silent Auto-Force Update (iPad Home Screen Web App) + Background Cloud Re-Sync ===
-    const APP_VERSION = '2026.11.25-03';
+    const APP_VERSION = '2026.11.25-05';
     let _lastCloudResyncTs = 0;
     async function silentCheckForNewVersion() {
       try {
@@ -4349,42 +4351,5 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       initPyodideEngine();
     });
   </script>
-
-      <!-- Lesson Cleared Title -->
-      <div class="relative z-30 mt-3 space-y-1">
-        <div id="luLessonTitle" class="font-display text-base sm:text-lg font-bold text-white">完成本課全部計分練習！</div>
-        <div id="luSubText" class="text-xs text-[#94a3b8]">已達成 6/6 全通關里程碑</div>
-      </div>
-
-      <!-- Layer 5: Overfill Flash XP Bar (+24px overfill + diagonal shine) -->
-      <div class="relative z-30 mt-4 mb-4 px-2">
-        <div class="flex items-center justify-between font-mono-code text-[10px] text-[#94a3b8] mb-1">
-          <span id="luPrevLvText">LV.0</span>
-          <span class="text-[#34d399] font-bold">STAGE CLEAR 100%</span>
-          <span id="luNextLvText" class="text-[#fbbf24] font-bold">LV.1</span>
-        </div>
-        <div class="relative h-3 rounded bg-[#05080f] border border-[#243754] overflow-visible">
-          <div id="luXpBarFill" class="lu-xp-fill">
-            <div class="lu-xp-shine"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layer 6: Staggered Stat Popups (0.09s apart) -->
-      <div id="luStatPopups" class="relative z-30 flex flex-wrap items-center justify-center gap-2 my-4"></div>
-
-      <!-- Actions -->
-      <div class="relative z-30 mt-5 flex flex-wrap items-center justify-center gap-2.5">
-        <button id="luNextLessonBtn" type="button" class="hw-btn hw-btn-primary px-5 py-2.5 rounded-md text-xs sm:text-sm font-bold flex items-center gap-1.5">
-          <span>挑戰下一課</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </button>
-        <button id="luCloseBtn" type="button" class="hw-btn px-4 py-2.5 rounded-md bg-[#132035] hover:bg-[#1e3252] border border-[#2a3b55] text-xs sm:text-sm font-bold text-slate-200">
-          留喺呢一題
-        </button>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
