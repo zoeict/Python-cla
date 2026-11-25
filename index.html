@@ -1334,7 +1334,10 @@
 
     async function syncToGoogleSheet(payload) {
       const url = getGasUrl();
-      if (!url) return;
+      if (!url) {
+        setCloudSyncBanner('⚠ 尚未設定 Google Apps Script 網址，無法寫入雲端', 'warn', 4500);
+        return false;
+      }
       const enriched = {
         ...payload,
         idToken: getTeacherIdToken(),
@@ -1346,16 +1349,28 @@
           tbDone: (typeof tbState !== 'undefined' && tbState.done) ? tbState.done : {}
         }
       };
+      setCloudSyncBanner('正在寫入 Google Sheet...', 'info');
       try {
-        await fetch(url, {
+        const resp = await fetch(url, {
           method: 'POST',
-          mode: 'no-cors',
+          redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(enriched)
         });
-        setCloudSyncBanner('✓ 進度已自動同步至 Google Sheet', 'ok', 2800);
+        if (!resp.ok) {
+          setCloudSyncBanner(`⚠ Google Sheet 寫入失敗（HTTP ${resp.status}）`, 'warn', 5500);
+          return false;
+        }
+        const data = await resp.json().catch(() => null);
+        if (data && (data.status === 'ok' || data.status === 'success')) {
+          setCloudSyncBanner('✓ 進度已自動同步至 Google Sheet', 'ok', 2800);
+          return true;
+        }
+        setCloudSyncBanner(`⚠ 雲端拒收：${(data && data.message) || '請確認 GAS 已重新部署最新版本'}`, 'warn', 6000);
+        return false;
       } catch (e) {
-        setCloudSyncBanner('⚠ 未能寫入 Google Sheet，請檢查網絡連線', 'warn', 4500);
+        setCloudSyncBanner('⚠ 未能寫入 Google Sheet，請檢查網絡或 GAS 部署權限', 'warn', 5500);
+        return false;
       }
     }
 
