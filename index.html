@@ -478,7 +478,7 @@
               <!-- Home Cloud Sync Status Banner -->
               <div id="homeSyncBanner" class="hidden flex items-center gap-2.5 px-3.5 py-2.5 rounded border border-[#38bdf8]/40 bg-[#0b1629] text-xs font-bold text-[#7dd3fc]">
                 <span id="homeSyncDot" class="inline-block w-2 h-2 rounded-full bg-[#38bdf8] animate-pulse shrink-0"></span>
-                <span id="homeSyncText">正在從 Google Sheet 同步你的學習進度與成績，請稍候...</span>
+                <span id="homeSyncText">同步中，請稍候</span>
               </div>
 
               <!-- 2-Module Precision Launch Grid -->
@@ -1194,7 +1194,7 @@
           tbDone: (typeof tbState !== 'undefined' && tbState.done) ? tbState.done : {}
         }
       };
-      setCloudSyncBanner('正在寫入 Google Sheet...', 'info');
+      setCloudSyncBanner('同步中，請稍候', 'info');
       try {
         const resp = await fetch(url, {
           method: 'POST',
@@ -1208,7 +1208,7 @@
         }
         const data = await resp.json().catch(() => null);
         if (data && (data.status === 'ok' || data.status === 'success')) {
-          setCloudSyncBanner('✓ 進度已自動同步至 Google Sheet', 'ok', 2800);
+          setCloudSyncBanner('✓ 同步完成', 'ok', 2800);
           return true;
         }
         setCloudSyncBanner(`⚠ 雲端拒收：${(data && data.message) || '請確認 GAS 已重新部署最新版本'}`, 'warn', 6000);
@@ -1288,7 +1288,7 @@
       const url = getGasUrl();
       if (!url || !email) return null;
       const showBanner = Boolean(opts.showBanner);
-      if (showBanner) setCloudSyncBanner('正在從 Google Sheet 同步你的學習進度與成績，請稍候...', 'info');
+      if (showBanner) setCloudSyncBanner('同步中，請稍候', 'info');
 
       const parseResp = (data) => {
         if (data && (data.status === 'success' || data.status === 'ok' || data.ok === true)) {
@@ -1408,9 +1408,9 @@
       const mergedLevels = Object.keys(state.completed).length;
       if (opts.showBanner) {
         if (cloud._found) {
-          setCloudSyncBanner(`✓ 已從雲端同步（計分 ${mergedLevels} 題 · 例題 ${mergedTbCount} 題）`, 'ok', 4500);
+          setCloudSyncBanner(`✓ 同步完成（計分 ${mergedLevels} 題 · 例題 ${mergedTbCount} 題）`, 'ok', 4500);
         } else {
-          setCloudSyncBanner('✓ 已連線 Google Sheet（雲端尚無舊紀錄）', 'ok', 3500);
+          setCloudSyncBanner('✓ 同步完成', 'ok', 3500);
         }
       }
       return { mergedLevels, mergedTb: mergedTbCount };
