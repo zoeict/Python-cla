@@ -345,9 +345,9 @@
       </div>
 
       <div class="flex items-center gap-2 order-2 sm:order-3">
-          載入 Python...
-        </span>
         <span id="headerTeacherBadge" class="hidden items-center gap-1 h-[32px] px-2.5 rounded-md bg-[#f59e0b]/15 border border-[#f59e0b]/45 text-[#fbbf24] font-mono-code text-[11px] font-bold whitespace-nowrap">老師模式</span>
+        <button id="switchToStudentViewBtn" type="button" class="hidden hw-btn h-[32px] px-2.5 rounded-md bg-[#38bdf8]/15 hover:bg-[#38bdf8]/25 border border-[#38bdf8]/45 text-[#bae6fd] font-mono-code text-[11px] font-bold items-center gap-1 whitespace-nowrap" title="以周同學身分體驗 100% 真實學生模式">🎓 學生視角</button>
+        <button id="returnTeacherViewBtn" type="button" class="hidden hw-btn h-[32px] px-2.5 rounded-md bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30 border border-[#f59e0b]/55 text-[#fde68a] font-mono-code text-[11px] font-bold items-center gap-1 whitespace-nowrap" title="返回老師模式">↩ 返回老師模式</button>
         <button id="headerPreviewLvUpBtn" type="button" class="hidden hw-btn h-[32px] px-2.5 rounded-md bg-[#10b981]/15 hover:bg-[#10b981]/25 border border-[#10b981]/45 text-[#6ee7b7] font-mono-code text-[11px] font-bold items-center gap-1 whitespace-nowrap" title="預覽課堂升級動畫">✨ 預覽升級</button>
         <button id="studentProfileBtn" class="hw-btn h-[34px] px-3 rounded bg-[#0f1d30] hover:bg-[#162943] text-[#bae6fd] border border-[#2c405e] hover:border-[#38bdf8]/70 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap">
           <i data-lucide="user-check" class="w-3.5 h-3.5 text-[#38bdf8]"></i>
@@ -694,9 +694,15 @@
               <div class="font-bold text-xs text-[#38bdf8]">【甲部：空運行與除錯】</div>
               <pre id="dqDebugPrompt" class="text-xs font-mono-code text-[#e2e8f0] whitespace-pre-wrap leading-relaxed"></pre>
             </div>
-            <div class="chassis-well rounded-sm p-4 space-y-2 border-l-2 border-l-[#10d981]">
+            <div class="chassis-well rounded-sm p-4 space-y-2.5 border-l-2 border-l-[#10d981]">
               <div class="font-bold text-xs text-[#10d981]">【乙部：算法比較】</div>
               <pre id="dqComparePrompt" class="text-xs font-mono-code text-[#e2e8f0] whitespace-pre-wrap leading-relaxed"></pre>
+              <div class="pt-1.5 border-t border-[#1d2b40]">
+                <label for="dqCompareInput" class="block text-[11px] font-bold text-[#6ee7b7] mb-1">乙部作答（必須填寫，至少 5 個字）：</label>
+                <textarea id="dqCompareInput" rows="3" spellcheck="false" autocomplete="off"
+                  class="w-full rounded-sm bg-[#060a12] border border-[#243754] focus:border-[#10b981] p-2.5 text-xs text-white outline-none resize-y"
+                  placeholder="請簡述你的算法比較或原因（例如時間效率、步驟數目、適用情況等）..."></textarea>
+              </div>
             </div>
           </div>
 
@@ -1404,6 +1410,11 @@
       const isT = isTeacherUser();
       const hb = document.getElementById('headerTeacherBadge');
       if (hb) { hb.classList.toggle('hidden', !isT); hb.classList.toggle('inline-flex', isT); }
+      const swStu = document.getElementById('switchToStudentViewBtn');
+      if (swStu) { swStu.classList.toggle('hidden', !isT); swStu.classList.toggle('inline-flex', isT); }
+      const retT = document.getElementById('returnTeacherViewBtn');
+      const isActingStu = Boolean(window._savedTeacherProfile && !isT);
+      if (retT) { retT.classList.toggle('hidden', !isActingStu); retT.classList.toggle('inline-flex', isActingStu); }
       const hp = document.getElementById('headerPreviewLvUpBtn');
       if (hp) { hp.classList.toggle('hidden', !isT); hp.classList.toggle('inline-flex', isT); }
       ['teacherRevealPyBtn', 'teacherRevealDqBtn', 'teacherRevealDrBtn', 'teacherRevealTbBtn', 'teacherPreviewLvUpBtn'].forEach((id) => {
@@ -2749,7 +2760,7 @@
 
 
     // === Silent Auto-Force Update (iPad Home Screen Web App) + Background Cloud Re-Sync ===
-    const APP_VERSION = '2026.11.25-05';
+    const APP_VERSION = '2026.11.25-06';
     let _lastCloudResyncTs = 0;
     async function silentCheckForNewVersion() {
       try {
@@ -3202,6 +3213,11 @@ if _check_file and not _err:
         document.getElementById('lvlPrompt').textContent = '閱讀以下甲部空運行除錯題與乙部算法比較題，並回答下方核對問題以解鎖下一課。';
         document.getElementById('dqDebugPrompt').textContent = lvl.debugPrompt;
         document.getElementById('dqComparePrompt').textContent = lvl.comparePrompt;
+        const dqBEl = document.getElementById('dqCompareInput');
+        if (dqBEl) {
+          const cachedB = loadDraft('dq_b', lvl.id);
+          dqBEl.value = (cachedB !== null) ? cachedB : '';
+        }
         document.getElementById('dqMcqStem').textContent = `核對問題：${lvl.mcqQuestion}`;
         document.getElementById('dqDebugAns').textContent = '';
         document.getElementById('dqCompareAns').textContent = '';
@@ -4207,13 +4223,45 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') checkDryrunExercise();
       });
 
+      const dqCompareInputEl = document.getElementById('dqCompareInput');
+      if (dqCompareInputEl) {
+        dqCompareInputEl.addEventListener('input', () => {
+          const curLv = LEVELS[state.currentLevelIdx];
+          if (curLv) saveDraft('dq_b', curLv.id, dqCompareInputEl.value);
+        });
+        dqCompareInputEl.addEventListener('paste', (e) => {
+          if (isTeacherUser()) return;
+          e.preventDefault();
+          const curLv = LEVELS[state.currentLevelIdx];
+          const fb = document.getElementById('dqFeedback');
+          fb.className = 'border-l-2 border-[#f43f5e] bg-[#f43f5e]/15 px-4 py-3 text-xs font-bold text-[#fecdd3]';
+          fb.textContent = '已攔截複製貼上（已即時記錄至老師進度表），請親自輸入乙部比較答案。';
+          fb.classList.remove('hidden');
+          logBlockedPasteInstant(curLv ? curLv.lcode : '計分練習', curLv ? curLv.id : 'DEBUG_QUIZ');
+        });
+      }
       document.getElementById('checkDebugQuizBtn').addEventListener('click', async () => {
         const lvl = LEVELS[state.currentLevelIdx];
         const fb = document.getElementById('dqFeedback');
-        if (state.selectedMcq === null) { markFailed(lvl, fb, '請先選擇一個答案選項。', '', []); return; }
+        if (state.selectedMcq === null) {
+          fb.className = 'border-l-2 border-[#f5a623] bg-[#f5a623]/12 px-4 py-3 text-xs font-bold text-[#fde68a]';
+          fb.textContent = '請先完成【甲部】並選擇一個答案選項。';
+          fb.classList.remove('hidden');
+          playError();
+          return;
+        }
+        const partBAns = dqCompareInputEl ? dqCompareInputEl.value.trim() : '';
+        if (partBAns.length < 5) {
+          fb.className = 'border-l-2 border-[#f5a623] bg-[#f5a623]/12 px-4 py-3 text-xs font-bold text-[#fde68a]';
+          fb.textContent = '請先完成【乙部：算法比較】作答（至少輸入 5 個字），完成甲乙兩部先可以提交核對！';
+          fb.classList.remove('hidden');
+          if (dqCompareInputEl) dqCompareInputEl.focus();
+          playError();
+          return;
+        }
         state.attempts[lvl.id] = (state.attempts[lvl.id] || 0) + 1;
         fb.className = 'border-l-2 border-[#38bdf8] bg-[#38bdf8]/12 px-4 py-3 text-xs font-bold text-[#bae6fd]';
-        fb.textContent = '正在雲端核對選擇題答案...';
+        fb.textContent = '正在雲端核對甲部及記錄乙部答案...';
         fb.classList.remove('hidden');
         const res = await callCloudGrader({ action: 'grade', kind: 'level_debug_quiz', id: lvl.id, selectedMcq: state.selectedMcq });
         if (res.status !== 'ok') {
@@ -4226,9 +4274,9 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           document.getElementById('dqDebugAns').textContent = res.debugAns || '';
           document.getElementById('dqCompareAns').textContent = res.compareAns || '';
           document.getElementById('dqModelAnsBox').classList.remove('hidden');
-          markPassed(lvl, fb, '答對！已由雲端解鎖甲部及乙部完整參考解析。', `MCQ:${state.selectedMcq}`, []);
+          markPassed(lvl, fb, '甲部答對、乙部已提交！請對照下方參考解析核對重點。', `MCQ:${state.selectedMcq} | 乙部: ${partBAns}`, []);
         } else {
-          markFailed(lvl, fb, '未啱，請再追蹤一次程式每一行的變量變化。', `MCQ:${state.selectedMcq}`, []);
+          markFailed(lvl, fb, '甲部選項未啱，請再追蹤一次程式每一行的變量變化。', `MCQ:${state.selectedMcq} | 乙部: ${partBAns}`, []);
         }
       });
 
@@ -4294,6 +4342,70 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         document.getElementById('loginModal').classList.remove('hidden');
       });
       document.getElementById('closeLoginModalBtn').addEventListener('click', () => document.getElementById('loginModal').classList.add('hidden'));
+      const swStuBtn = document.getElementById('switchToStudentViewBtn');
+      if (swStuBtn) {
+        swStuBtn.addEventListener('click', async () => {
+          if (!isTeacherUser()) return;
+          window._savedTeacherProfile = { ...state.student };
+          const stuProfile = {
+            id: 'co.zoee@gmail.com',
+            email: 'co.zoee@gmail.com',
+            cls: 'TEST',
+            no: '00',
+            name: '周同學',
+            picture: '',
+            verifiedGoogle: true,
+            teacherMode: false,
+            idToken: ''
+          };
+          loadProfile(stuProfile);
+          const cloud = await loadCloudProgressByEmail(stuProfile.email);
+          if (cloud) {
+            state.xp = Number(cloud.xp || 0);
+            state.penalty = Number(cloud.penalty || 0);
+            state.completed = { ...(cloud.completed || {}) };
+            if (typeof tbState !== 'undefined') {
+              tbState.done = { ...(cloud.tbDone || {}) };
+              try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
+            }
+            saveProgress();
+          }
+          if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
+          if (typeof renderSidebars === 'function') renderSidebars();
+          if (typeof renderHomeRoadmap === 'function') renderHomeRoadmap();
+          if (typeof renderTextbookList === 'function') renderTextbookList();
+          if (typeof renderDseList === 'function') renderDseList();
+          if (typeof loadLevel === 'function' && typeof LEVELS !== 'undefined' && LEVELS.length) loadLevel(0);
+          syncTeacherUI();
+        });
+      }
+      const retTBtn = document.getElementById('returnTeacherViewBtn');
+      if (retTBtn) {
+        retTBtn.addEventListener('click', async () => {
+          if (!window._savedTeacherProfile) return;
+          const tProf = { ...window._savedTeacherProfile };
+          window._savedTeacherProfile = null;
+          loadProfile(tProf);
+          const cloud = await loadCloudProgressByEmail(tProf.email);
+          if (cloud) {
+            state.xp = Number(cloud.xp || 0);
+            state.penalty = Number(cloud.penalty || 0);
+            state.completed = { ...(cloud.completed || {}) };
+            if (typeof tbState !== 'undefined') {
+              tbState.done = { ...(cloud.tbDone || {}) };
+              try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
+            }
+            saveProgress();
+          }
+          if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
+          if (typeof renderSidebars === 'function') renderSidebars();
+          if (typeof renderHomeRoadmap === 'function') renderHomeRoadmap();
+          if (typeof renderTextbookList === 'function') renderTextbookList();
+          if (typeof renderDseList === 'function') renderDseList();
+          if (typeof loadLevel === 'function' && typeof LEVELS !== 'undefined' && LEVELS.length) loadLevel(state.currentLevelIdx);
+          syncTeacherUI();
+        });
+      }
 
       
 
