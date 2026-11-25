@@ -1488,9 +1488,18 @@
     // 雲端與本地進度聯集（Union）合併：永不覆蓋離線已完成題目、取最高分、還原最新程式碼
     function mergeCloudProgress(cloud, opts = {}) {
       if (!cloud) return { mergedLevels: Object.keys(state.completed).length, mergedTb: 0 };
+      const validLevelIds = new Set((typeof LEVELS !== 'undefined' ? LEVELS : []).map((l) => l.id));
+      const validTbIds = new Set((typeof TEXTBOOK_EXAMPLES !== 'undefined' ? TEXTBOOK_EXAMPLES : []).map((t) => t.id));
       const cloudComp = cloud.completed || {};
-      const mergedComp = { ...state.completed };
-      Object.keys(cloudComp).forEach((k) => { if (cloudComp[k]) mergedComp[k] = true; });
+      const mergedComp = {};
+      const strayTb = {};
+      [state.completed, cloudComp].forEach((src) => {
+        Object.keys(src || {}).forEach((k) => {
+          if (!src[k]) return;
+          if (validLevelIds.has(k)) mergedComp[k] = true;
+          else if (validTbIds.has(k)) strayTb[k] = true;
+        });
+      });
       state.completed = mergedComp;
 
       // 以 Google Sheet UserProgress 為準，直接反映真實分數與扣分（不額外重算抬高）
@@ -1506,8 +1515,12 @@
       let mergedTbCount = 0;
       if (typeof tbState !== 'undefined') {
         const cloudTb = cloud.tbDone || {};
-        const mergedTb = { ...(tbState.done || {}) };
-        Object.keys(cloudTb).forEach((k) => { if (cloudTb[k]) mergedTb[k] = true; });
+        const mergedTb = { ...strayTb };
+        [tbState.done || {}, cloudTb].forEach((src) => {
+          Object.keys(src).forEach((k) => {
+            if (src[k] && validTbIds.has(k)) mergedTb[k] = true;
+          });
+        });
         tbState.done = mergedTb;
         mergedTbCount = Object.keys(mergedTb).length;
       }
