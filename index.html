@@ -274,8 +274,9 @@
   <header class="sticky top-0 z-30 border-b border-[#1d2b40] bg-[#070b12]/95 backdrop-blur-md">
     <div class="max-w-[1440px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5">
-        <button id="mobileMenuBtn" class="lg:hidden hw-btn p-1.5 rounded bg-[#101a2a] border border-[#243754] text-slate-200" aria-label="開啟課程目錄">
-          <i data-lucide="menu" class="w-4 h-4"></i>
+        <button id="mobileMenuBtn" class="hidden hw-btn h-[32px] px-2.5 rounded-md bg-[#0c2236] border border-[#38bdf8]/60 text-[#38bdf8] hover:text-white hover:border-[#38bdf8] text-xs font-bold items-center gap-1.5 shrink-0 transition" aria-label="收合或展開目錄" aria-expanded="true" title="收合或展開目錄">
+          <i data-lucide="panel-left" class="w-4 h-4 shrink-0"></i>
+          <span>目錄</span>
         </button>
         <button id="brandHomeBtn" class="flex items-center gap-2 text-left group">
           <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#101c2e] border border-[#2c405e] group-hover:border-[#38bdf8] transition">
@@ -303,6 +304,7 @@
           <span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span>
           載入 Python...
         </span>
+        <span id="headerTeacherBadge" class="hidden items-center gap-1 h-[32px] px-2.5 rounded-md bg-[#f59e0b]/15 border border-[#f59e0b]/45 text-[#fbbf24] font-mono-code text-[11px] font-bold whitespace-nowrap">老師模式</span>
         <button id="studentProfileBtn" class="hw-btn h-[34px] px-3 rounded bg-[#0f1d30] hover:bg-[#162943] text-[#bae6fd] border border-[#2c405e] hover:border-[#38bdf8]/70 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap">
           <i data-lucide="user-check" class="w-3.5 h-3.5 text-[#38bdf8]"></i>
           <span id="headerStudentLabel" class="max-w-[110px] truncate">登入</span>
@@ -365,7 +367,7 @@
             <h2 class="text-xs font-bold text-[#cbd5e1]">單元目錄</h2>
             <span class="text-[10px] text-[#34d399] font-bold">23 課</span>
           </div>
-          <button id="collapseSidebarBtn" class="hw-btn px-2 py-0.5 rounded-sm bg-[#132035] hover:bg-[#1e3252] border border-[#243754] text-[10px] font-bold text-[#9aa7b8] hover:text-white" title="收合側欄以全寬顯示">◀ 收合</button>
+
         </div>
         <div id="chapterList" class="space-y-2.5"></div>
       </div>
@@ -474,7 +476,6 @@
             </div>
 
             <div class="flex items-center gap-1.5 shrink-0">
-              <button id="questMenuToggleBtn" class="lg:hidden hw-btn px-2.5 py-1.5 rounded-sm bg-[#132035] hover:bg-[#1e3252] border border-[#38bdf8]/45 text-xs font-bold text-[#38bdf8] inline-flex items-center gap-1.5"><i data-lucide="menu" class="w-3.5 h-3.5"></i> 單元目錄</button>
               <button id="prevLevelBtn" class="hw-btn px-3 py-1.5 rounded-sm bg-[#141b25] hover:bg-[#1e2837] border border-[#2a3647] text-xs font-bold text-slate-200 disabled:opacity-35">← 上一題</button>
               <button id="nextLevelBtn" class="hw-btn px-3 py-1.5 rounded-sm bg-[#141b25] hover:bg-[#1e2837] border border-[#2a3647] text-xs font-bold text-slate-200 disabled:opacity-35">下一題 →</button>
             </div>
@@ -530,7 +531,15 @@
               <button id="toggleHintBtn" class="hw-btn px-2.5 py-1 rounded-sm bg-[#141b25] hover:bg-[#1e2837] text-xs font-bold text-[#f5a623] border border-[#f5a623]/35">睇提示</button>
               <button id="showSolutionBtn" class="hw-btn px-2.5 py-1 rounded-sm bg-[#141b25] hover:bg-[#1e2837] text-xs font-bold text-[#9aa7b8] border border-[#2a3647]">參考答案（半倍分）</button>
               <button id="resetStarterBtn" class="hw-btn px-2.5 py-1 rounded-sm bg-[#141b25] hover:bg-[#1e2837] text-xs font-bold text-[#64748b] border border-[#212a36]">重設骨架</button>
+              <button id="teacherRevealPyBtn" type="button" class="hidden hw-btn px-2.5 py-1 rounded-sm bg-[#f59e0b]/15 hover:bg-[#f59e0b]/25 text-xs font-bold text-[#fbbf24] border border-[#f59e0b]/45">👁️ 老師答案</button>
             </div>
+          </div>
+          <div id="teacherPyAnsBox" class="hidden rounded-sm bg-[#151208] border border-[#f59e0b]/45 p-3 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono-code text-[11px] font-bold text-[#fbbf24]">老師參考答案（雲端即時提取）</span>
+              <button id="teacherFillPyBtn" type="button" class="hw-btn px-2 py-0.5 rounded-sm bg-[#f59e0b] hover:bg-[#fbbf24] text-[#1a1200] text-[11px] font-bold">一鍵填入編輯器</button>
+            </div>
+            <pre id="teacherPyAnsPre" class="font-mono-code text-xs text-[#fef3c7] bg-[#090805] border border-[#f59e0b]/25 p-2.5 rounded-sm overflow-x-auto whitespace-pre"></pre>
           </div>
 
           <!-- Quick Python Keyword Chips -->
@@ -642,6 +651,7 @@
                 <span>答對後解鎖下一題 →</span>
               </button>
             </div>
+            <div class="flex justify-end"><button id="teacherRevealDqBtn" type="button" class="hidden hw-btn px-2.5 py-1 rounded-sm bg-[#f59e0b]/15 hover:bg-[#f59e0b]/25 text-xs font-bold text-[#fbbf24] border border-[#f59e0b]/45">👁️ 老師答案</button></div>
             <div id="dqFeedback" class="hidden px-3.5 py-3 text-sm font-bold"></div>
             <div id="dqModelAnsBox" class="hidden border-l-2 border-[#10d981] bg-[#10d981]/10 p-3.5 text-xs text-[#d1fae5] space-y-2">
               <div><b class="text-[#10d981]">甲部參考解析：</b><pre id="dqDebugAns" class="font-mono-code whitespace-pre-wrap mt-1"></pre></div>
@@ -675,6 +685,7 @@
                 <span>答對後解鎖下一題 →</span>
               </button>
             </div>
+            <div class="flex justify-end"><button id="teacherRevealDrBtn" type="button" class="hidden hw-btn px-2.5 py-1 rounded-sm bg-[#f59e0b]/15 hover:bg-[#f59e0b]/25 text-xs font-bold text-[#fbbf24] border border-[#f59e0b]/45">👁️ 老師答案</button></div>
             <div id="drFeedback" class="hidden px-3.5 py-3 text-sm font-bold"></div>
             <div id="drExplainBox" class="hidden border-l-2 border-[#10d981] bg-[#10d981]/10 p-3.5 text-xs text-[#d1fae5] space-y-1.5">
               <div><b class="text-[#10d981]">標準輸出：</b><pre id="drModelAns" class="font-mono-code whitespace-pre-wrap mt-1 text-white"></pre></div>
@@ -730,7 +741,6 @@
       <section id="textbookContainer" class="hidden p-2.5 sm:p-5 bg-[#0e1726]/90 space-y-3 sm:space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#1e2d44] pb-2.5">
           <div class="flex items-center gap-2">
-            <button id="tbMenuToggleBtn" class="lg:hidden hw-btn px-2.5 py-1 rounded-sm bg-[#132035] hover:bg-[#1e3252] border border-[#38bdf8]/45 text-xs font-bold text-[#38bdf8] inline-flex items-center gap-1.5"><i data-lucide="menu" class="w-3.5 h-3.5"></i> 例題目錄</button>
             <h2 class="font-display text-lg sm:text-xl font-bold text-white">例題庫</h2>
           </div>
           <div class="font-mono-code text-xs px-3 py-1.5 rounded-sm bg-[#080d16] border border-[#10b981]/40 text-[#34d399] font-bold">
@@ -746,7 +756,6 @@
               <div class="flex items-center justify-between pb-1.5 border-b border-[#182438]">
                 <span class="font-mono-code text-[11px] font-bold text-[#38bdf8]">例題目錄</span>
                 <div class="flex items-center gap-1.5">
-                  <button id="tbCollapseBtn" class="hidden lg:inline-flex hw-btn px-2 py-0.5 rounded-sm bg-[#132035] hover:bg-[#1e3252] border border-[#243754] text-[10px] font-bold text-[#9aa7b8] hover:text-white" title="收合目錄以全寬顯示">◀ 收合</button>
                   <button id="tbDrawerCloseBtn" class="lg:hidden p-1 rounded-sm bg-[#141b25] text-slate-300"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
               </div>
@@ -803,7 +812,17 @@
               <div class="rounded-sm border border-[#243754] bg-[#060a12] overflow-hidden">
                 <div class="flex items-center justify-between px-3 py-1.5 bg-[#0c1422] border-b border-[#1b283d] font-mono-code text-[10px] text-[#9aa7b8]">
                   <span id="tbEditorModeTag">完成以下程式</span>
-                  <button id="tbResetCodeBtn" class="text-[#38bdf8] hover:underline font-bold">重設程式碼</button>
+                  <div class="flex items-center gap-3">
+                    <button id="teacherRevealTbBtn" type="button" class="hidden text-[#fbbf24] hover:underline font-bold">👁️ 老師答案</button>
+                    <button id="tbResetCodeBtn" class="text-[#38bdf8] hover:underline font-bold">重設程式碼</button>
+                  </div>
+                </div>
+                <div id="teacherTbAnsBox" class="hidden bg-[#151208] border-b border-[#f59e0b]/40 p-3 space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-mono-code text-[11px] font-bold text-[#fbbf24]">老師參考答案（雲端即時提取）</span>
+                    <button id="teacherFillTbBtn" type="button" class="hw-btn px-2 py-0.5 rounded-sm bg-[#f59e0b] hover:bg-[#fbbf24] text-[#1a1200] text-[11px] font-bold">一鍵填入編輯器</button>
+                  </div>
+                  <pre id="teacherTbAnsPre" class="font-mono-code text-xs text-[#fef3c7] bg-[#090805] border border-[#f59e0b]/25 p-2.5 rounded-sm overflow-x-auto whitespace-pre"></pre>
                 </div>
                 <div id="tbZhBar" class="hidden flex flex-wrap items-center gap-1.5 px-2.5 py-1.5 bg-[#091220] border-b border-[#1b283d] text-[11px]"></div>
                 <div class="ipad-key-bar" data-target-editor="tbCodeInput"></div>
@@ -1213,8 +1232,14 @@
         errEl.classList.remove('hidden');
         return;
       }
-      pendingGoogleUser = { email, name: info.name || '', picture: info.picture || '', verifiedGoogle: true };
+      const isTeacherEmail = TEACHER_EMAILS.includes(email);
+      try { sessionStorage.setItem('hkdse_py_id_token', response.credential || ''); } catch (e) {}
+      pendingGoogleUser = { email, name: info.name || '', picture: info.picture || '', verifiedGoogle: true, idToken: response.credential || '', teacherMode: isTeacherEmail };
       document.getElementById('loginNameInput').value = info.name || document.getElementById('loginNameInput').value;
+      if (isTeacherEmail) {
+        if (!document.getElementById('loginClassInput').value.trim()) document.getElementById('loginClassInput').value = 'TEACHER';
+        if (!document.getElementById('loginNoInput').value.trim()) document.getElementById('loginNoInput').value = '00';
+      }
       updateGmailModalUI();
 
       // Auto-load cloud progress from Google Sheet!
@@ -1276,7 +1301,8 @@
       if (!isChapterUnlocked(LEVELS[state.currentLevelIdx].ch)) state.currentLevelIdx = 0;
       state.openChapters = { [LEVELS[state.currentLevelIdx].ch]: true };
       document.getElementById('headerStudentLabel').textContent = `${stu.cls}-${stu.no} ${stu.name}`;
-      document.getElementById('teacherModeTag').classList.toggle('hidden', !stu.teacherMode);
+      document.getElementById('teacherModeTag').classList.toggle('hidden', !isTeacherUser());
+      syncTeacherUI();
       renderProgressWidgets();
       renderSidebars();
       renderHomeRoadmap();
@@ -1288,9 +1314,41 @@
       const done = items.filter((l) => state.completed[l.id]).length;
       return { total: items.length, done, cleared: done === items.length && items.length > 0 };
     }
+    const TEACHER_EMAILS = ['cot@frcss.edu.hk'];
+    function isTeacherUser() {
+      return Boolean(
+        state.student &&
+        state.student.verifiedGoogle &&
+        TEACHER_EMAILS.includes(String(state.student.email || '').trim().toLowerCase())
+      );
+    }
+    function getTeacherIdToken() {
+      if (state.student && state.student.idToken) return state.student.idToken;
+      try { return sessionStorage.getItem('hkdse_py_id_token') || ''; } catch (e) { return ''; }
+    }
+    function syncTeacherUI() {
+      const isT = isTeacherUser();
+      const hb = document.getElementById('headerTeacherBadge');
+      if (hb) { hb.classList.toggle('hidden', !isT); hb.classList.toggle('inline-flex', isT); }
+      ['teacherRevealPyBtn', 'teacherRevealDqBtn', 'teacherRevealDrBtn', 'teacherRevealTbBtn'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', !isT);
+      });
+      if (!isT) {
+        const pyBox = document.getElementById('teacherPyAnsBox'); if (pyBox) pyBox.classList.add('hidden');
+        const tbBox = document.getElementById('teacherTbAnsBox'); if (tbBox) tbBox.classList.add('hidden');
+      }
+    }
+    async function fetchTeacherAnswer(kind, id) {
+      const idToken = getTeacherIdToken();
+      if (!idToken) {
+        return { status: 'error', message: '請先按右上角重新以老師 Google 帳戶登入以驗證身分。' };
+      }
+      return await callCloudGrader({ action: 'teacher_answer', kind, id, idToken });
+    }
     function isChapterUnlocked(ch) {
       if (ch <= 1) return true;
-      if (state.student && state.student.teacherMode) return true;
+      if (isTeacherUser()) return true;
       return getChapterStats(ch - 1).cleared;
     }
 
@@ -1984,6 +2042,8 @@ if _check_file and not _err:
         updateLineGutter(ed, document.getElementById('pyLineGutter'));
         document.getElementById('manualStdin').value = (lvl.tests[0] && lvl.tests[0].stdin) ? lvl.tests[0].stdin.trim() : '';
         document.getElementById('pyFeedback').classList.add('hidden');
+        const tPyBox = document.getElementById('teacherPyAnsBox'); if (tPyBox) tPyBox.classList.add('hidden');
+        syncTeacherUI();
         document.getElementById('astAlertBox').classList.add('hidden'); const qtw = document.getElementById('questTraceWrap'); if (qtw) qtw.classList.add('hidden');
         document.getElementById('hintBox').classList.add('hidden');
         document.getElementById('hintBox').textContent = lvl.hint || '進階題目不設提示，請自行拆解算法。';
@@ -2187,47 +2247,66 @@ if _check_file and not _err:
 
     const sp = { paused: true, raf: null, score: 0, streak: 0, cleared: 0 };
 
+    function syncTopLeftToggleBtn() {
+      const btn = document.getElementById('mobileMenuBtn');
+      if (!btn) return;
+      const hasSidebar = state.mode === 'quest' || state.mode === 'textbook';
+      if (!hasSidebar) {
+        btn.classList.add('hidden');
+        btn.classList.remove('inline-flex');
+        return;
+      }
+      btn.classList.remove('hidden');
+      btn.classList.add('inline-flex');
+      const isExpandedDesktop = window.innerWidth >= 1024 && (
+        (state.mode === 'quest' && !state.sidebarCollapsed) ||
+        (state.mode === 'textbook' && !state.tbSidebarCollapsed)
+      );
+      btn.setAttribute('aria-expanded', isExpandedDesktop ? 'true' : 'false');
+      btn.title = isExpandedDesktop ? '收合目錄' : '展開目錄';
+      btn.className = isExpandedDesktop
+        ? 'inline-flex hw-btn h-[32px] px-2.5 rounded-md bg-[#0c2236] border border-[#38bdf8]/60 text-[#38bdf8] hover:text-white hover:border-[#38bdf8] text-xs font-bold items-center gap-1.5 shrink-0 transition'
+        : 'inline-flex hw-btn h-[32px] px-2.5 rounded-md bg-[#101a2a] border border-[#243754] text-slate-300 hover:text-white hover:border-[#38bdf8]/60 text-xs font-bold items-center gap-1.5 shrink-0 transition';
+    }
+
     function applyTbSidebarLayout(openMobileDrawer = false) {
       const bd = document.getElementById('tbSidebarBackdrop');
       const panel = document.getElementById('tbSidebarPanel');
       const rf = document.getElementById('tbRightFrame');
-      const tBtn = document.getElementById('tbMenuToggleBtn');
       if (!bd || !rf) return;
       if (openMobileDrawer && window.innerWidth < 1024) {
         bd.className = 'fixed inset-0 z-40 bg-black/75 backdrop-blur-sm p-3 flex items-start';
-        panel.className = 'w-80 max-w-[86vw] max-h-[94dvh] overflow-y-auto space-y-2.5 chassis-surface rounded-sm p-3 border-[#243754] shadow-2xl';
+        panel.className = 'w-80 max-w-[86vw] max-h-[94dvh] overflow-y-auto space-y-2.5 chassis-surface rounded-md p-3 border-[#243754] shadow-2xl';
+        syncTopLeftToggleBtn();
         return;
       }
-      panel.className = 'space-y-2.5 chassis-surface rounded-sm p-3 border-[#1e2d44]';
+      panel.className = 'space-y-2.5 chassis-surface rounded-md p-3 border-[#1e2d44]';
       if (!state.tbSidebarCollapsed) {
         bd.className = 'hidden lg:block lg:col-span-4';
         rf.className = 'lg:col-span-8 space-y-3 sm:space-y-4';
-        if (tBtn) tBtn.classList.add('lg:hidden');
       } else {
         bd.className = 'hidden';
         rf.className = 'lg:col-span-12 space-y-3 sm:space-y-4';
-        if (tBtn) tBtn.classList.remove('lg:hidden');
       }
+      syncTopLeftToggleBtn();
     }
 
     function applySidebarLayout() {
       const sb = document.getElementById('sidebarPanel');
       const mw = document.getElementById('mainWorkbench');
-      const qBtn = document.getElementById('questMenuToggleBtn');
       const inQuest = state.mode === 'quest';
       if (inQuest && !state.sidebarCollapsed) {
         sb.classList.add('hidden');
         sb.classList.add('lg:flex');
         mw.classList.remove('lg:col-span-12');
         mw.classList.add('lg:col-span-9');
-        if (qBtn) { qBtn.classList.add('lg:hidden'); }
       } else {
         sb.classList.add('hidden');
         sb.classList.remove('lg:flex');
         mw.classList.remove('lg:col-span-9');
         mw.classList.add('lg:col-span-12');
-        if (qBtn) { qBtn.classList.remove('lg:hidden'); }
       }
+      syncTopLeftToggleBtn();
     }
 
     function switchMode(mode) {
@@ -2489,6 +2568,8 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       renderZhChipsBar('tbZhBar', 'tbCodeInput', ex.zhChips || []);
       document.getElementById('tbOutputPre').textContent = '按「運行」或「核對輸出」...';
       document.getElementById('tbFeedbackBox').classList.add('hidden');
+      const tTbBox = document.getElementById('teacherTbAnsBox'); if (tTbBox) tTbBox.classList.add('hidden');
+      syncTeacherUI();
       document.getElementById('tbEditorModeTag').textContent = '完成以下程式';
     }
 
@@ -2764,6 +2845,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       });
       pyInput.addEventListener('scroll', () => { pyGutter.scrollTop = pyInput.scrollTop; });
       const blockPyPaste = (e) => {
+        if (isTeacherUser()) return;
         e.preventDefault();
         const box = document.getElementById('astAlertBox');
         document.getElementById('astAlertText').textContent = '已攔截複製貼上（已即時記錄至老師進度表），請親手輸入或使用上方中文詞彙按鈕。';
@@ -2781,6 +2863,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           if (curLv) saveDraft('dr', curLv.id, drIn.value);
         });
         drIn.addEventListener('paste', (e) => {
+          if (isTeacherUser()) return;
           e.preventDefault();
           const curLv = LEVELS[state.currentLevelIdx];
           logBlockedPasteInstant(curLv ? curLv.lcode : '空運行', curLv ? curLv.id : 'DRYRUN');
@@ -2795,6 +2878,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           if (tbState.activeId) saveDraft('tb', tbState.activeId, tbEd.value);
         });
         const blockTbPaste = (e) => {
+          if (isTeacherUser()) return;
           e.preventDefault();
           const fb = document.getElementById('tbFeedbackBox');
           fb.className = 'px-3.5 py-2.5 text-xs font-bold rounded-sm bg-[#f43f5e]/15 border border-[#f43f5e]/45 text-[#fecdd3]';
@@ -2870,6 +2954,111 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         updateLineGutter(pyInput, pyGutter);
       });
 
+      // Teacher Mode: On-demand Cloud Answer Reveal (Zero plaintext answers in HTML)
+      let lastTeacherPySol = '';
+      let lastTeacherTbSol = '';
+      const tPyBtn = document.getElementById('teacherRevealPyBtn');
+      if (tPyBtn) {
+        tPyBtn.addEventListener('click', async () => {
+          const box = document.getElementById('teacherPyAnsBox');
+          const pre = document.getElementById('teacherPyAnsPre');
+          if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+          const lvl = LEVELS[state.currentLevelIdx];
+          if (!lvl) return;
+          pre.textContent = '正在從雲端驗證老師身分並載入答案...';
+          box.classList.remove('hidden');
+          const res = await fetchTeacherAnswer('level', lvl.id);
+          if (res.status === 'ok' && res.data && res.data.solution) {
+            lastTeacherPySol = res.data.solution;
+            pre.textContent = res.data.solution;
+          } else {
+            lastTeacherPySol = '';
+            pre.textContent = res.message || '未能載入參考答案，請重新登入老師 Google 帳戶。';
+          }
+        });
+      }
+      const tFillPyBtn = document.getElementById('teacherFillPyBtn');
+      if (tFillPyBtn) {
+        tFillPyBtn.addEventListener('click', () => {
+          if (!lastTeacherPySol) return;
+          pyInput.value = lastTeacherPySol;
+          updateLineGutter(pyInput, pyGutter);
+        });
+      }
+      const tDqBtn = document.getElementById('teacherRevealDqBtn');
+      if (tDqBtn) {
+        tDqBtn.addEventListener('click', async () => {
+          const box = document.getElementById('dqModelAnsBox');
+          if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+          const lvl = LEVELS[state.currentLevelIdx];
+          if (!lvl) return;
+          const res = await fetchTeacherAnswer('level', lvl.id);
+          if (res.status === 'ok' && res.data) {
+            const optLetters = ['A', 'B', 'C', 'D'];
+            const corr = typeof res.data.mcqCorrect === 'number' ? `正確選項：${optLetters[res.data.mcqCorrect] || res.data.mcqCorrect}\n` : '';
+            document.getElementById('dqDebugAns').textContent = corr + (res.data.debugAns || '');
+            document.getElementById('dqCompareAns').textContent = res.data.compareAns || '';
+            box.classList.remove('hidden');
+          } else {
+            const fb = document.getElementById('dqFeedback');
+            fb.className = 'border-l-2 border-[#f5a623] bg-[#f5a623]/12 px-4 py-3 text-xs font-bold text-[#fde68a]';
+            fb.textContent = res.message || '未能載入參考答案，請重新登入老師 Google 帳戶。';
+            fb.classList.remove('hidden');
+          }
+        });
+      }
+      const tDrBtn = document.getElementById('teacherRevealDrBtn');
+      if (tDrBtn) {
+        tDrBtn.addEventListener('click', async () => {
+          const box = document.getElementById('drExplainBox');
+          if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+          const lvl = LEVELS[state.currentLevelIdx];
+          if (!lvl) return;
+          const res = await fetchTeacherAnswer('level', lvl.id);
+          if (res.status === 'ok' && res.data) {
+            document.getElementById('drModelAns').textContent = res.data.answer || '';
+            document.getElementById('drExplainText').textContent = res.data.explain || '';
+            box.classList.remove('hidden');
+          } else {
+            const fb = document.getElementById('drFeedback');
+            fb.className = 'border-l-2 border-[#f5a623] bg-[#f5a623]/12 px-4 py-3 text-xs font-bold text-[#fde68a]';
+            fb.textContent = res.message || '未能載入參考答案，請重新登入老師 Google 帳戶。';
+            fb.classList.remove('hidden');
+          }
+        });
+      }
+      const tTbBtn = document.getElementById('teacherRevealTbBtn');
+      if (tTbBtn) {
+        tTbBtn.addEventListener('click', async () => {
+          const box = document.getElementById('teacherTbAnsBox');
+          const pre = document.getElementById('teacherTbAnsPre');
+          if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+          const ex = TEXTBOOK_EXAMPLES.find((e) => e.id === tbState.activeId);
+          if (!ex) return;
+          pre.textContent = '正在從雲端驗證老師身分並載入答案...';
+          box.classList.remove('hidden');
+          const res = await fetchTeacherAnswer('textbook', ex.id);
+          if (res.status === 'ok' && res.data && res.data.solution) {
+            lastTeacherTbSol = res.data.solution;
+            pre.textContent = res.data.solution;
+          } else {
+            lastTeacherTbSol = '';
+            pre.textContent = res.message || '未能載入參考答案，請重新登入老師 Google 帳戶。';
+          }
+        });
+      }
+      const tFillTbBtn = document.getElementById('teacherFillTbBtn');
+      if (tFillTbBtn) {
+        tFillTbBtn.addEventListener('click', () => {
+          if (!lastTeacherTbSol) return;
+          const tbEdEl = document.getElementById('tbCodeInput');
+          if (tbEdEl) {
+            tbEdEl.value = lastTeacherTbSol;
+            updateLineGutter(tbEdEl, document.getElementById('tbLineGutter'));
+          }
+        });
+      }
+
       // Debug Quiz Check
       const checkDryrunExercise = async () => {
         const lvl = LEVELS[state.currentLevelIdx];
@@ -2944,40 +3133,36 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
 
       // Modals & Mobile Drawer
       const drawerEl = document.getElementById('mobileDrawer');
-      const openSyllabusMenu = () => {
+      const toggleSyllabusMenu = () => {
         if (state.mode === 'textbook') {
-          if (window.innerWidth >= 1024) { state.tbSidebarCollapsed = false; applyTbSidebarLayout(false); }
-          else { applyTbSidebarLayout(true); }
+          if (window.innerWidth >= 1024) {
+            state.tbSidebarCollapsed = !state.tbSidebarCollapsed;
+            applyTbSidebarLayout(false);
+          } else {
+            const bd = document.getElementById('tbSidebarBackdrop');
+            const isOpen = bd && bd.classList.contains('fixed');
+            applyTbSidebarLayout(!isOpen);
+          }
           return;
         }
-        if (window.innerWidth >= 1024 && state.mode === 'quest') {
-          state.sidebarCollapsed = false;
-          applySidebarLayout();
-        } else {
-          drawerEl.classList.remove('hidden');
+        if (state.mode === 'quest') {
+          if (window.innerWidth >= 1024) {
+            state.sidebarCollapsed = !state.sidebarCollapsed;
+            applySidebarLayout();
+          } else {
+            drawerEl.classList.toggle('hidden');
+          }
         }
       };
-      document.getElementById('tbMenuToggleBtn').addEventListener('click', () => {
-        if (window.innerWidth >= 1024) { state.tbSidebarCollapsed = false; applyTbSidebarLayout(false); }
-        else { applyTbSidebarLayout(true); }
-      });
-      document.getElementById('tbCollapseBtn').addEventListener('click', () => {
-        state.tbSidebarCollapsed = true;
-        applyTbSidebarLayout(false);
-      });
       document.getElementById('tbDrawerCloseBtn').addEventListener('click', () => applyTbSidebarLayout(false));
       document.getElementById('tbSidebarBackdrop').addEventListener('click', (e) => {
         if (e.target === e.currentTarget && window.innerWidth < 1024) applyTbSidebarLayout(false);
       });
       window.addEventListener('resize', () => {
         if (state.mode === 'textbook') applyTbSidebarLayout(false);
+        else syncTopLeftToggleBtn();
       });
-      document.getElementById('mobileMenuBtn').addEventListener('click', openSyllabusMenu);
-      document.getElementById('questMenuToggleBtn').addEventListener('click', openSyllabusMenu);
-      document.getElementById('collapseSidebarBtn').addEventListener('click', () => {
-        state.sidebarCollapsed = true;
-        applySidebarLayout();
-      });
+      document.getElementById('mobileMenuBtn').addEventListener('click', toggleSyllabusMenu);
       document.getElementById('closeMobileDrawerBtn').addEventListener('click', () => drawerEl.classList.add('hidden'));
       drawerEl.addEventListener('click', (e) => {
         if (e.target === drawerEl) drawerEl.classList.add('hidden');
@@ -3002,7 +3187,8 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         const cls = document.getElementById('loginClassInput').value.trim().toUpperCase();
         const no = document.getElementById('loginNoInput').value.trim().padStart(2, '0');
         const name = document.getElementById('loginNameInput').value.trim();
-        const teacherMode = document.getElementById('loginTeacherToggle').checked || cls === 'TEACHER';
+        const loginEmailCheck = (pendingGoogleUser ? pendingGoogleUser.email : (state.student && state.student.email ? state.student.email : '')).trim().toLowerCase();
+        const teacherMode = TEACHER_EMAILS.includes(loginEmailCheck);
         const err = document.getElementById('loginErrorMsg');
         const stEl = document.getElementById('loginCloudStatus');
         const cid = getGoogleClientId();
@@ -3038,7 +3224,8 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         stEl.textContent = '正在同步雲端進度...';
         stEl.classList.remove('hidden');
 
-        const profile = { id: email, email, cls, no, name, picture, verifiedGoogle, teacherMode };
+        const idToken = (pendingGoogleUser && pendingGoogleUser.idToken) ? pendingGoogleUser.idToken : getTeacherIdToken();
+        const profile = { id: email, email, cls, no, name, picture, verifiedGoogle, teacherMode: Boolean(verifiedGoogle && TEACHER_EMAILS.includes(email)), idToken };
         loadProfile(profile);
 
         const cloud = await loadCloudProgressByEmail(email);
