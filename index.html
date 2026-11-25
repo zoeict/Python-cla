@@ -568,7 +568,6 @@
               <span id="tabSwitchReadout" class="hidden"></span>
               <span id="teacherModeTag" class="hidden text-[#38bdf8] font-bold">全部已解鎖</span>
               <button id="teacherPreviewLvUpBtn" type="button" class="hidden text-[#fbbf24] hover:underline font-bold">✨ 預覽升級</button>
-              <button id="manualCloudSyncBtn" type="button" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#38bdf8]/12 hover:bg-[#38bdf8]/22 border border-[#38bdf8]/35 text-[#7dd3fc] font-bold transition" title="從 Google Sheet 讀取並合併雲端進度">↻ 從雲端還原進度</button>
             </div>
             <div id="cloudSyncStatusBar" class="hidden mt-1 font-mono-code text-[10px] text-[#7dd3fc]"></div>
           </div>
@@ -701,7 +700,6 @@
           <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             <span id="mobLevelBadge" class="px-2 py-0.5 rounded bg-[#10b981]/20 text-[#34d399] border border-[#10b981]/40 font-bold">LV.0</span>
             <span class="text-[#94a3b8]">分數: <b id="mobXpReadout" class="text-[#f5a623]">0</b></span>
-            <button id="mobCloudSyncBtn" type="button" class="px-1.5 py-0.5 rounded bg-[#38bdf8]/15 border border-[#38bdf8]/35 text-[#7dd3fc] font-bold" title="從雲端還原進度">↻ 雲端同步</button>
             <span id="mobPenaltyReadout" class="text-[#fda4af] font-bold">扣分: 0</span>
           </div>
           <div class="flex items-center gap-2">
@@ -1355,7 +1353,10 @@
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(enriched)
         });
-      } catch (e) {}
+        setCloudSyncBanner('✓ 進度已自動同步至 Google Sheet', 'ok', 2800);
+      } catch (e) {
+        setCloudSyncBanner('⚠ 未能寫入 Google Sheet，請檢查網絡連線', 'warn', 4500);
+      }
     }
 
     function sprintHash(cardId, ans) {
@@ -1458,7 +1459,7 @@
         }
       } catch (e) {}
 
-      if (showBanner) setCloudSyncBanner('離線模式（未能連線雲端，已保留本地進度）', 'warn', 4500);
+      if (showBanner) setCloudSyncBanner('⚠ 未能連線 Google Sheet，請檢查網絡（所有進度一律儲存於雲端）', 'warn', 5500);
       return null;
     }
 
@@ -1491,7 +1492,6 @@
         Object.keys(cloudTb).forEach((k) => { if (cloudTb[k]) mergedTb[k] = true; });
         tbState.done = mergedTb;
         mergedTbCount = Object.keys(mergedTb).length;
-        try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
       }
 
       // 還原雲端最新提交程式碼至本地草稿（僅於本地尚未修改該題時補入，避免覆蓋離線新寫程式碼）
@@ -1527,36 +1527,10 @@
         if (cloud._found) {
           setCloudSyncBanner(`✓ 已從雲端同步（計分 ${mergedLevels} 題 · 例題 ${mergedTbCount} 題）`, 'ok', 4500);
         } else {
-          setCloudSyncBanner('✓ 雲端尚無舊紀錄（已保留本地進度）', 'ok', 4000);
+          setCloudSyncBanner('✓ 已連線 Google Sheet（雲端尚無舊紀錄）', 'ok', 3500);
         }
       }
       return { mergedLevels, mergedTb: mergedTbCount };
-    }
-
-    async function manualSyncCloudProgress() {
-      const email = state.student && state.student.email;
-      if (!email) {
-        setCloudSyncBanner('請先以學校 Google 帳戶登入後再同步。', 'warn', 3500);
-        return;
-      }
-      const url = getGasUrl();
-      if (!url) {
-        setCloudSyncBanner('未設定雲端網址（目前為本地離線模式）', 'warn', 3500);
-        return;
-      }
-      const btn = document.getElementById('manualCloudSyncBtn');
-      const mobBtn = document.getElementById('mobCloudSyncBtn');
-      if (btn) { btn.disabled = true; btn.textContent = '↻ 同步中...'; }
-      if (mobBtn) { mobBtn.disabled = true; mobBtn.textContent = '↻ 同步中'; }
-      try {
-        const cloud = await loadCloudProgressByEmail(email, { showBanner: true });
-        if (cloud) {
-          mergeCloudProgress(cloud, { showBanner: true });
-        }
-      } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '↻ 從雲端還原進度'; }
-        if (mobBtn) { mobBtn.disabled = false; mobBtn.textContent = '↻ 雲端同步'; }
-      }
     }
 
     function decodeJwtPayload(token) {
@@ -1674,18 +1648,7 @@
       loadProfile(profile);
 
       if (cloud) {
-        state.xp = Number(cloud.xp || 0);
-        state.penalty = Number(cloud.penalty || 0);
-        state.completed = { ...(cloud.completed || {}) };
-        if (typeof tbState !== 'undefined') {
-          tbState.done = { ...(cloud.tbDone || {}) };
-          try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
-        }
-        saveProgress();
-        if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
-        if (typeof renderSidebars === 'function') renderSidebars();
-        if (typeof renderHomeRoadmap === 'function') renderHomeRoadmap();
-        if (typeof renderTextbookList === 'function') renderTextbookList();
+        mergeCloudProgress(cloud, { showBanner: true });
         if (typeof renderDseList === 'function') renderDseList();
         if (typeof loadLevel === 'function' && typeof LEVELS !== 'undefined' && LEVELS.length) loadLevel(state.currentLevelIdx);
       }
@@ -1708,34 +1671,37 @@
       }
     });
 
-    function profileKey(id) { return `hkdse_py_class_v1_prof_${id}`; }
+    function purgeLegacyLocalProgress() {
+      try {
+        const toRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k) continue;
+          if (k.startsWith('hkdse_py_class_v1_prof_') || k.startsWith('hkdse_py_class_draft_v1_') || k === TB_DONE_KEY) {
+            toRemove.push(k);
+          }
+        }
+        toRemove.forEach((k) => { try { localStorage.removeItem(k); } catch (e) {} });
+      } catch (e) {}
+    }
+
     function saveProgress() {
       if (!state.student) return;
+      // 進度一律強制儲存於 Google Sheet，不在本機 localStorage 寫入任何作答進度
       try {
         localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(state.student));
-        localStorage.setItem(profileKey(state.student.id), JSON.stringify({
-          completed: state.completed, usedSolution: state.usedSolution, attempts: state.attempts,
-          xp: state.xp, penalty: state.penalty, tabSwitches: state.tabSwitches,
-          awaySeconds: state.awaySeconds, currentLevelIdx: state.currentLevelIdx, sprintBest: state.sprintBest
-        }));
       } catch (e) {}
     }
 
     function loadProfile(stu) {
+      purgeLegacyLocalProgress();
       state.student = stu;
       state.completed = {}; state.usedSolution = {}; state.attempts = {};
       state.xp = 0; state.penalty = 0; state.tabSwitches = 0; state.awaySeconds = 0; state.currentLevelIdx = 0; state.sprintBest = 0;
-      try {
-        const raw = localStorage.getItem(profileKey(stu.id));
-        if (raw) {
-          const p = JSON.parse(raw);
-          state.completed = p.completed || {}; state.usedSolution = p.usedSolution || {}; state.attempts = p.attempts || {};
-          state.xp = Number(p.xp) || 0; state.penalty = Number(p.penalty) || 0;
-          state.tabSwitches = Number(p.tabSwitches) || 0; state.awaySeconds = Number(p.awaySeconds) || 0;
-          state.currentLevelIdx = Math.min(LEVELS.length - 1, Math.max(0, Number(p.currentLevelIdx) || 0));
-          state.sprintBest = Number(p.sprintBest) || 0;
-        }
-      } catch (e) {}
+      if (typeof tbState !== 'undefined') tbState.done = {};
+      if (typeof _memDrafts !== 'undefined') {
+        Object.keys(_memDrafts).forEach((k) => { delete _memDrafts[k]; });
+      }
       if (!isChapterUnlocked(LEVELS[state.currentLevelIdx].ch)) state.currentLevelIdx = 0;
       state.openChapters = { [LEVELS[state.currentLevelIdx].ch]: true };
       document.getElementById('headerStudentLabel').textContent = stu.name || (stu.email ? stu.email.split('@')[0] : '已登入');
@@ -3105,17 +3071,19 @@
       const uid = (state.student && state.student.email) ? state.student.email : 'guest';
       return `hkdse_py_class_draft_v1_${uid}_${scope}_${id}`;
     }
+    const _memDrafts = {};
     function saveDraft(scope, id, val) {
       if (!id) return;
-      try { localStorage.setItem(draftStorageKey(scope, id), String(val == null ? '' : val)); } catch (e) {}
+      _memDrafts[draftStorageKey(scope, id)] = String(val == null ? '' : val);
     }
     function loadDraft(scope, id) {
       if (!id) return null;
-      try { return localStorage.getItem(draftStorageKey(scope, id)); } catch (e) { return null; }
+      const k = draftStorageKey(scope, id);
+      return Object.prototype.hasOwnProperty.call(_memDrafts, k) ? _memDrafts[k] : null;
     }
     function clearDraft(scope, id) {
       if (!id) return;
-      try { localStorage.removeItem(draftStorageKey(scope, id)); } catch (e) {}
+      delete _memDrafts[draftStorageKey(scope, id)];
     }
 
     function renderZhChipsBar(barId, editorId, chips) {
@@ -4062,7 +4030,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
     // =========================================================================
     const TB_DONE_KEY = 'hkdse_py_class_tb_done_v1';
     const tbState = { book: 'ALL', origin: 'ALL', query: '', activeId: TEXTBOOK_EXAMPLES[0].id, practice: true, done: {} };
-    try { tbState.done = JSON.parse(localStorage.getItem(TB_DONE_KEY) || '{}'); } catch (e) {}
+    tbState.done = {}; // 例題進度一律由 Google Sheet 載入，不讀取本機快取
 
     function makeBlankedCode(ex) {
       return ex.starter || '';
@@ -4188,7 +4156,6 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       if (cloudRes.passed) {
         if (cloudRes.expected) document.getElementById('tbExpectedPre').textContent = cloudRes.expected;
         tbState.done[ex.id] = true;
-        try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
         fbEl.className = 'rounded-sm px-3.5 py-2.5 text-xs font-bold bg-[#10d981]/15 border border-[#10d981]/45 text-[#a7f3d0]';
         fbEl.textContent = `✓ PASS // 輸出與課本例題 ${ex.id} 完全一致，且符合標準 Python 寫法！`;
         fbEl.classList.remove('hidden');
@@ -4800,10 +4767,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       if (tPrevLvBtn) tPrevLvBtn.addEventListener('click', openTeacherLvPreview);
       const hPrevLvBtn = document.getElementById('headerPreviewLvUpBtn');
       if (hPrevLvBtn) hPrevLvBtn.addEventListener('click', openTeacherLvPreview);
-      const mSyncBtn = document.getElementById('manualCloudSyncBtn');
-      if (mSyncBtn) mSyncBtn.addEventListener('click', manualSyncCloudProgress);
-      const mobSyncBtn = document.getElementById('mobCloudSyncBtn');
-      if (mobSyncBtn) mobSyncBtn.addEventListener('click', manualSyncCloudProgress);
+
       ['levelBadge', 'questLvBadge', 'mobLevelBadge'].forEach((_bid) => {
         const _bel = document.getElementById(_bid);
         if (_bel) _bel.addEventListener('click', () => { if (typeof window.openLevelCardGallery === 'function') window.openLevelCardGallery(); });
