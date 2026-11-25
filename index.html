@@ -568,7 +568,9 @@
               <span id="tabSwitchReadout" class="hidden"></span>
               <span id="teacherModeTag" class="hidden text-[#38bdf8] font-bold">全部已解鎖</span>
               <button id="teacherPreviewLvUpBtn" type="button" class="hidden text-[#fbbf24] hover:underline font-bold">✨ 預覽升級</button>
+              <button id="manualCloudSyncBtn" type="button" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#38bdf8]/12 hover:bg-[#38bdf8]/22 border border-[#38bdf8]/35 text-[#7dd3fc] font-bold transition" title="從 Google Sheet 讀取並合併雲端進度">↻ 從雲端還原進度</button>
             </div>
+            <div id="cloudSyncStatusBar" class="hidden mt-1 font-mono-code text-[10px] text-[#7dd3fc]"></div>
           </div>
 
           <div class="flex flex-col items-center">
@@ -699,6 +701,7 @@
           <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             <span id="mobLevelBadge" class="px-2 py-0.5 rounded bg-[#10b981]/20 text-[#34d399] border border-[#10b981]/40 font-bold">LV.0</span>
             <span class="text-[#94a3b8]">分數: <b id="mobXpReadout" class="text-[#f5a623]">0</b></span>
+            <button id="mobCloudSyncBtn" type="button" class="px-1.5 py-0.5 rounded bg-[#38bdf8]/15 border border-[#38bdf8]/35 text-[#7dd3fc] font-bold" title="從雲端還原進度">↻ 雲端同步</button>
             <span id="mobPenaltyReadout" class="text-[#fda4af] font-bold">扣分: 0</span>
           </div>
           <div class="flex items-center gap-2">
@@ -1393,26 +1396,167 @@
       }
     }
 
-    async function loadCloudProgressByEmail(email) {
+    let _cloudSyncHideTimer = null;
+    function setCloudSyncBanner(msg, tone = 'info', autoHideMs = 0) {
+      const el = document.getElementById('cloudSyncStatusBar');
+      if (!el) return;
+      clearTimeout(_cloudSyncHideTimer);
+      if (!msg) { el.classList.add('hidden'); return; }
+      const colorMap = {
+        info: 'text-[#7dd3fc]',
+        ok: 'text-[#34d399]',
+        warn: 'text-[#fbbf24]'
+      };
+      el.className = 'mt-1 font-mono-code text-[10px] font-bold ' + (colorMap[tone] || colorMap.info);
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      if (autoHideMs > 0) {
+        _cloudSyncHideTimer = setTimeout(() => { el.classList.add('hidden'); }, autoHideMs);
+      }
+    }
+
+    async function loadCloudProgressByEmail(email, opts = {}) {
       const url = getGasUrl();
-      const idToken = getTeacherIdToken();
-      if (!url || !email || !idToken) return null;
-      try {
-        const data = await callCloudGrader({
-          action: 'load_progress',
-          idToken,
-          targetEmail: email
-        });
-        if (data && data.status === 'ok') {
+      if (!url || !email) return null;
+      const showBanner = Boolean(opts.showBanner);
+      if (showBanner) setCloudSyncBanner('正在從雲端同步進度...', 'info');
+
+      const parseResp = (data) => {
+        if (data && (data.status === 'success' || data.status === 'ok' || data.ok === true)) {
           if (data.found && data.progress) {
             return { ...data.progress, _found: true };
           }
           if (data.found === false) {
-            return { _found: false, xp: 0, penalty: 0, completed: {}, tbDone: {} };
+            return { _found: false, xp: 0, penalty: 0, completed: {}, tbDone: {}, latestCode: {} };
           }
         }
+        return null;
+      };
+
+      // 1) 優先使用已驗證 Google ID Token 透過 POST 讀取
+      const idToken = getTeacherIdToken();
+      if (idToken) {
+        try {
+          const postData = await callCloudGrader({
+            action: 'load_progress',
+            idToken,
+            targetEmail: email
+          });
+          const parsed = parseResp(postData);
+          if (parsed) return parsed;
+        } catch (e) {}
+      }
+
+      // 2) 後備：透過 GAS doGet (?action=getProgress&email=...) 雙向拉取（適用於重新開啟瀏覽器或憑證過期時）
+      try {
+        const qs = `action=getProgress&email=${encodeURIComponent(email)}&t=${Date.now()}`;
+        const resp = await fetch(`${url}?${qs}`, { method: 'GET', cache: 'no-store' });
+        if (resp.ok) {
+          const getData = await resp.json();
+          const parsed = parseResp(getData);
+          if (parsed) return parsed;
+        }
       } catch (e) {}
+
+      if (showBanner) setCloudSyncBanner('離線模式（未能連線雲端，已保留本地進度）', 'warn', 4500);
       return null;
+    }
+
+    // 雲端與本地進度聯集（Union）合併：永不覆蓋離線已完成題目、取最高分、還原最新程式碼
+    function mergeCloudProgress(cloud, opts = {}) {
+      if (!cloud) return { mergedLevels: Object.keys(state.completed).length, mergedTb: 0 };
+      const cloudComp = cloud.completed || {};
+      const mergedComp = { ...state.completed };
+      Object.keys(cloudComp).forEach((k) => { if (cloudComp[k]) mergedComp[k] = true; });
+      state.completed = mergedComp;
+
+      // 計算已過關題目的最低應得 XP，並與本地及雲端 XP 取最大值
+      let minEarnedXp = 0;
+      if (typeof LEVELS !== 'undefined') {
+        LEVELS.forEach((lv) => { if (state.completed[lv.id]) minEarnedXp += (Number(lv.xp) || 0); });
+      }
+      state.xp = Math.max(Number(state.xp || 0), Number(cloud.xp || 0), minEarnedXp);
+      state.penalty = Math.max(Number(state.penalty || 0), Number(cloud.penalty || 0));
+
+      if (state.student) {
+        if (!state.student.cls && cloud.cls) state.student.cls = cloud.cls;
+        if (!state.student.no && cloud.no) state.student.no = cloud.no;
+        if (!state.student.name && cloud.name) state.student.name = cloud.name;
+      }
+
+      let mergedTbCount = 0;
+      if (typeof tbState !== 'undefined') {
+        const cloudTb = cloud.tbDone || {};
+        const mergedTb = { ...(tbState.done || {}) };
+        Object.keys(cloudTb).forEach((k) => { if (cloudTb[k]) mergedTb[k] = true; });
+        tbState.done = mergedTb;
+        mergedTbCount = Object.keys(mergedTb).length;
+        try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
+      }
+
+      // 還原雲端最新提交程式碼至本地草稿（僅於本地尚未修改該題時補入，避免覆蓋離線新寫程式碼）
+      const cloudCodes = cloud.latestCode || {};
+      let restoredCurCode = false;
+      const curLvl = (typeof LEVELS !== 'undefined') ? LEVELS[state.currentLevelIdx] : null;
+      Object.keys(cloudCodes).forEach((lvlId) => {
+        const codeStr = cloudCodes[lvlId];
+        if (!codeStr) return;
+        if (typeof loadDraft === 'function' && typeof saveDraft === 'function') {
+          if (loadDraft('quest', lvlId) === null) {
+            saveDraft('quest', lvlId, codeStr);
+            if (curLvl && curLvl.id === lvlId) restoredCurCode = true;
+          }
+        }
+      });
+
+      saveProgress();
+      if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
+      if (typeof renderSidebars === 'function') renderSidebars();
+      if (typeof renderHomeRoadmap === 'function') renderHomeRoadmap();
+      if (typeof renderTextbookList === 'function') renderTextbookList();
+      if (restoredCurCode && curLvl && curLvl.type === 'py') {
+        const ed = document.getElementById('pyInput');
+        if (ed && (!ed.value.trim() || ed.value === (curLvl.starter || ''))) {
+          ed.value = cloudCodes[curLvl.id];
+          if (typeof updateLineGutter === 'function') updateLineGutter(ed, document.getElementById('pyLineGutter'));
+        }
+      }
+
+      const mergedLevels = Object.keys(state.completed).length;
+      if (opts.showBanner) {
+        if (cloud._found) {
+          setCloudSyncBanner(`✓ 已從雲端同步（計分 ${mergedLevels} 題 · 例題 ${mergedTbCount} 題）`, 'ok', 4500);
+        } else {
+          setCloudSyncBanner('✓ 雲端尚無舊紀錄（已保留本地進度）', 'ok', 4000);
+        }
+      }
+      return { mergedLevels, mergedTb: mergedTbCount };
+    }
+
+    async function manualSyncCloudProgress() {
+      const email = state.student && state.student.email;
+      if (!email) {
+        setCloudSyncBanner('請先以學校 Google 帳戶登入後再同步。', 'warn', 3500);
+        return;
+      }
+      const url = getGasUrl();
+      if (!url) {
+        setCloudSyncBanner('未設定雲端網址（目前為本地離線模式）', 'warn', 3500);
+        return;
+      }
+      const btn = document.getElementById('manualCloudSyncBtn');
+      const mobBtn = document.getElementById('mobCloudSyncBtn');
+      if (btn) { btn.disabled = true; btn.textContent = '↻ 同步中...'; }
+      if (mobBtn) { mobBtn.disabled = true; mobBtn.textContent = '↻ 同步中'; }
+      try {
+        const cloud = await loadCloudProgressByEmail(email, { showBanner: true });
+        if (cloud) {
+          mergeCloudProgress(cloud, { showBanner: true });
+        }
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '↻ 從雲端還原進度'; }
+        if (mobBtn) { mobBtn.disabled = false; mobBtn.textContent = '↻ 雲端同步'; }
+      }
     }
 
     function decodeJwtPayload(token) {
@@ -3047,17 +3191,7 @@
       if (!email) return;
       const cloud = await loadCloudProgressByEmail(email);
       if (!cloud) return;
-      state.xp = Number(cloud.xp || 0);
-      state.penalty = Number(cloud.penalty || 0);
-      state.completed = { ...(cloud.completed || {}) };
-      if (typeof tbState !== 'undefined') {
-        tbState.done = { ...(cloud.tbDone || {}) };
-        try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
-      }
-      saveProgress();
-      if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
-      if (typeof renderSidebars === 'function') renderSidebars();
-      if (typeof renderHomeRoadmap === 'function') renderHomeRoadmap();
+      mergeCloudProgress(cloud);
       if (typeof renderTextbookList === 'function') renderTextbookList();
       if (typeof renderDseList === 'function') renderDseList();
     }
@@ -4666,6 +4800,10 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       if (tPrevLvBtn) tPrevLvBtn.addEventListener('click', openTeacherLvPreview);
       const hPrevLvBtn = document.getElementById('headerPreviewLvUpBtn');
       if (hPrevLvBtn) hPrevLvBtn.addEventListener('click', openTeacherLvPreview);
+      const mSyncBtn = document.getElementById('manualCloudSyncBtn');
+      if (mSyncBtn) mSyncBtn.addEventListener('click', manualSyncCloudProgress);
+      const mobSyncBtn = document.getElementById('mobCloudSyncBtn');
+      if (mobSyncBtn) mobSyncBtn.addEventListener('click', manualSyncCloudProgress);
       ['levelBadge', 'questLvBadge', 'mobLevelBadge'].forEach((_bid) => {
         const _bel = document.getElementById(_bid);
         if (_bel) _bel.addEventListener('click', () => { if (typeof window.openLevelCardGallery === 'function') window.openLevelCardGallery(); });
@@ -4702,14 +4840,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           loadProfile(stuProfile);
           const cloud = await loadCloudProgressByEmail(stuProfile.email);
           if (cloud) {
-            state.xp = Number(cloud.xp || 0);
-            state.penalty = Number(cloud.penalty || 0);
-            state.completed = { ...(cloud.completed || {}) };
-            if (typeof tbState !== 'undefined') {
-              tbState.done = { ...(cloud.tbDone || {}) };
-              try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
-            }
-            saveProgress();
+            mergeCloudProgress(cloud, { showBanner: true });
           }
           if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
           if (typeof renderSidebars === 'function') renderSidebars();
@@ -4729,14 +4860,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           loadProfile(tProf);
           const cloud = await loadCloudProgressByEmail(tProf.email);
           if (cloud) {
-            state.xp = Number(cloud.xp || 0);
-            state.penalty = Number(cloud.penalty || 0);
-            state.completed = { ...(cloud.completed || {}) };
-            if (typeof tbState !== 'undefined') {
-              tbState.done = { ...(cloud.tbDone || {}) };
-              try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
-            }
-            saveProgress();
+            mergeCloudProgress(cloud, { showBanner: true });
           }
           if (typeof renderProgressWidgets === 'function') renderProgressWidgets();
           if (typeof renderSidebars === 'function') renderSidebars();
@@ -4780,16 +4904,9 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       try { saved = JSON.parse(localStorage.getItem(ACTIVE_USER_KEY) || 'null'); } catch (e) {}
       if (saved && saved.id && saved.email) {
         loadProfile(saved);
-        loadCloudProgressByEmail(saved.email).then((cloud) => {
+        loadCloudProgressByEmail(saved.email, { showBanner: true }).then((cloud) => {
           if (!cloud) return;
-          state.xp = Number(cloud.xp || 0);
-          state.penalty = Number(cloud.penalty || 0);
-          state.completed = { ...(cloud.completed || {}) };
-          if (typeof tbState !== 'undefined') {
-            tbState.done = { ...(cloud.tbDone || {}) };
-            try { localStorage.setItem(TB_DONE_KEY, JSON.stringify(tbState.done)); } catch (e) {}
-          }
-          saveProgress(); renderProgressWidgets(); renderSidebars(); renderHomeRoadmap();
+          mergeCloudProgress(cloud, { showBanner: true });
         });
       } else {
         document.getElementById('headerStudentLabel').textContent = 'Gmail 登入';
