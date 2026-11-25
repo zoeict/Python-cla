@@ -329,6 +329,37 @@
     }
     .xp-pop-once { display: inline-block; animation: xpPopGlow 0.65s ease-out; }
 
+
+    /* === Refined High-Contrast Glass Sync Pill === */
+    @keyframes syncPillSweep {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(220%); }
+    }
+    .home-sync-pill {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 26px;
+      border-radius: 999px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .home-sync-pill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+      transform: translateX(-120%);
+      pointer-events: none;
+    }
+    .home-sync-pill.is-syncing::after {
+      animation: syncPillSweep 1.9s ease-in-out infinite;
+    }
   </style>
 </head>
 <body class="antialiased selection:bg-[#38bdf8] selection:text-[#04131e]">
@@ -475,10 +506,12 @@
                 </div>
               </div>
 
-              <!-- High-Contrast Home Cloud Sync Status Banner -->
-              <div id="homeSyncBanner" class="hidden flex items-center justify-center gap-3 px-5 py-3.5 rounded-lg border-2 shadow-xl transition-all duration-300" style="background:linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%);border-color:#fef08a;color:#0b0f19;box-shadow:0 10px 30px rgba(245,158,11,0.36);">
-                <span id="homeSyncDot" class="inline-block w-4 h-4 rounded-full border-2 border-[#0b0f19]/30 border-t-[#0b0f19] animate-spin shrink-0"></span>
-                <span id="homeSyncText" class="text-sm sm:text-base font-black tracking-wide">同步中，請稍候</span>
+              <!-- Sleek High-Contrast Home Cloud Sync Pill -->
+              <div id="homeSyncBanner" class="hidden w-full flex justify-center py-0.5">
+                <div id="homeSyncPill" class="home-sync-pill is-syncing">
+                  <span id="homeSyncDot" class="inline-block w-4 h-4 rounded-full border-2 border-[#fbbf24]/25 border-t-[#fbbf24] animate-spin shrink-0"></span>
+                  <span id="homeSyncText" class="text-sm sm:text-[15px] font-bold tracking-wider">同步中，請稍候</span>
+                </div>
               </div>
             </div>
 
@@ -1235,46 +1268,50 @@
 
     let _cloudSyncHideTimer = null;
     function setCloudSyncBanner(msg, tone = 'info', autoHideMs = 0) {
-      const el = document.getElementById('homeSyncBanner');
+      const wrap = document.getElementById('homeSyncBanner');
+      const pill = document.getElementById('homeSyncPill');
       const txt = document.getElementById('homeSyncText');
       const dot = document.getElementById('homeSyncDot');
-      if (!el || !txt) return;
+      if (!wrap || !pill || !txt) return;
       clearTimeout(_cloudSyncHideTimer);
-      if (!msg) { el.classList.add('hidden'); return; }
+      if (!msg) { wrap.classList.add('hidden'); return; }
       const styleMap = {
         info: {
-          bg: 'linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%)',
-          border: '#fef08a',
-          color: '#0b0f19',
-          shadow: '0 10px 30px rgba(245,158,11,0.38)',
-          dotCls: 'inline-block w-4 h-4 rounded-full border-2 border-[#0b0f19]/30 border-t-[#0b0f19] animate-spin shrink-0'
+          bg: 'linear-gradient(135deg, rgba(36, 24, 8, 0.92) 0%, rgba(22, 16, 8, 0.94) 100%)',
+          border: '1px solid rgba(251, 191, 36, 0.72)',
+          color: '#fef3c7',
+          shadow: '0 0 0 1px rgba(251, 191, 36, 0.16), 0 12px 32px -6px rgba(245, 158, 11, 0.34)',
+          dotCls: 'inline-block w-4 h-4 rounded-full border-2 border-[#fbbf24]/25 border-t-[#fbbf24] animate-spin shrink-0',
+          syncing: true
         },
         ok: {
-          bg: 'linear-gradient(135deg,#10b981 0%,#34d399 100%)',
-          border: '#a7f3d0',
-          color: '#031a12',
-          shadow: '0 10px 28px rgba(16,185,129,0.35)',
-          dotCls: 'inline-block w-3 h-3 rounded-full bg-[#031a12] shrink-0'
+          bg: 'linear-gradient(135deg, rgba(7, 32, 24, 0.92) 0%, rgba(6, 22, 18, 0.94) 100%)',
+          border: '1px solid rgba(52, 211, 153, 0.68)',
+          color: '#d1fae5',
+          shadow: '0 0 0 1px rgba(52, 211, 153, 0.16), 0 12px 28px -6px rgba(16, 185, 129, 0.30)',
+          dotCls: 'inline-block w-2.5 h-2.5 rounded-full bg-[#34d399] shadow-[0_0_10px_#34d399] shrink-0',
+          syncing: false
         },
         warn: {
-          bg: 'linear-gradient(135deg,#f43f5e 0%,#fb7185 100%)',
-          border: '#fecdd3',
-          color: '#ffffff',
-          shadow: '0 10px 28px rgba(244,63,94,0.36)',
-          dotCls: 'inline-block w-3 h-3 rounded-full bg-white animate-pulse shrink-0'
+          bg: 'linear-gradient(135deg, rgba(40, 10, 18, 0.92) 0%, rgba(24, 8, 14, 0.94) 100%)',
+          border: '1px solid rgba(251, 113, 133, 0.72)',
+          color: '#ffe4e6',
+          shadow: '0 0 0 1px rgba(251, 113, 133, 0.16), 0 12px 28px -6px rgba(244, 63, 94, 0.32)',
+          dotCls: 'inline-block w-2.5 h-2.5 rounded-full bg-[#fb7185] animate-pulse shrink-0',
+          syncing: false
         }
       };
       const cfg = styleMap[tone] || styleMap.info;
-      el.className = 'flex items-center justify-center gap-3 px-5 py-3.5 rounded-lg border-2 shadow-xl transition-all duration-300';
-      el.style.background = cfg.bg;
-      el.style.borderColor = cfg.border;
-      el.style.color = cfg.color;
-      el.style.boxShadow = cfg.shadow;
+      pill.style.background = cfg.bg;
+      pill.style.border = cfg.border;
+      pill.style.color = cfg.color;
+      pill.style.boxShadow = cfg.shadow;
+      pill.classList.toggle('is-syncing', Boolean(cfg.syncing));
       if (dot) dot.className = cfg.dotCls;
       txt.textContent = msg;
-      el.classList.remove('hidden');
+      wrap.classList.remove('hidden');
       if (autoHideMs > 0) {
-        _cloudSyncHideTimer = setTimeout(() => { el.classList.add('hidden'); }, autoHideMs);
+        _cloudSyncHideTimer = setTimeout(() => { wrap.classList.add('hidden'); }, autoHideMs);
       }
     }
 
