@@ -5052,7 +5052,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       const hBar = document.getElementById('homeExtraBar');
       if (hBar) hBar.style.width = `${pctN}%`;
       if (window.SelfLearningCardEngine && typeof window.SelfLearningCardEngine.syncBadge === 'function') {
-        window.SelfLearningCardEngine.syncBadge(doneN);
+        window.SelfLearningCardEngine.syncBadge(practiceState.done);
       }
     }
 
@@ -5386,13 +5386,11 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         practiceState.attempts[q.id] = (practiceState.attempts[q.id] || 0) + 1;
         const passed = Boolean(res.passed);
         if (passed) {
-          const prevSlDone = Object.keys(practiceState.done).length;
-          const prevSlLv = window.SelfLearningCardEngine ? window.SelfLearningCardEngine.getLevel(prevSlDone) : 0;
+          const prevSlLv = window.SelfLearningCardEngine ? window.SelfLearningCardEngine.getLevel(practiceState.done) : 0;
           practiceState.done[q.id] = true;
           document.getElementById('prDoneTag')?.classList.remove('hidden');
           renderPracticeList();
-          const newSlDone = Object.keys(practiceState.done).length;
-          const newSlLv = window.SelfLearningCardEngine ? window.SelfLearningCardEngine.getLevel(newSlDone) : 0;
+          const newSlLv = window.SelfLearningCardEngine ? window.SelfLearningCardEngine.getLevel(practiceState.done) : 0;
           if (newSlLv > prevSlLv && window.SelfLearningCardEngine) {
             setTimeout(() => window.SelfLearningCardEngine.play(newSlLv), 320);
           }
@@ -5628,32 +5626,44 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       6: { hex: '#38f2ff', color: 0x38f2ff, master: true }
     };
 
-    // 額外操練 6 級升級門檻（共 521 題）
-    const SL_THRESHOLDS = [1, 30, 80, 160, 300, 450];
+    // 按 6 大課題進度：每完成 1 個大課題（達 80%）解鎖 1 級，完成全部 6 個大課題解鎖 Lv.6 Master
+    const SL_TOPIC_PASS_RATIO = 0.80;
 
     let activeSession = null;
     let isMuted = false;
 
-    function getLevel(doneCount) {
-      let lv = 0;
-      for (let i = 0; i < SL_THRESHOLDS.length; i++) {
-        if (doneCount >= SL_THRESHOLDS[i]) lv = i + 1;
+    function getLevel(doneMap) {
+      const map = (doneMap && typeof doneMap === 'object')
+        ? doneMap
+        : ((typeof practiceState !== 'undefined' && practiceState && practiceState.done) ? practiceState.done : {});
+      if (typeof PRACTICE_TAXONOMY === 'undefined' || typeof PRACTICE_BANK === 'undefined') return 0;
+      let cleared = 0;
+      for (let i = 0; i < PRACTICE_TAXONOMY.length; i++) {
+        const catKey = PRACTICE_TAXONOMY[i].catKey;
+        let tot = 0, done = 0;
+        for (let j = 0; j < PRACTICE_BANK.length; j++) {
+          if (PRACTICE_BANK[j].cat === catKey) {
+            tot++;
+            if (map[PRACTICE_BANK[j].id]) done++;
+          }
+        }
+        if (tot > 0 && (done / tot) >= SL_TOPIC_PASS_RATIO) cleared++;
       }
-      return lv;
+      return Math.min(6, cleared);
     }
 
-    function syncBadge(doneCount) {
-      const lv = getLevel(doneCount);
+    function syncBadge(doneMap) {
+      const lv = getLevel(doneMap);
       const btn = document.getElementById('prSlLevelBadgeBtn');
       if (!btn) return;
       if (lv <= 0) {
-        btn.textContent = 'Lv.0 (1題解鎖)';
+        btn.textContent = 'Lv.0 (0/6 課題達80%)';
         btn.style.borderColor = 'rgba(100,116,139,0.45)';
         btn.style.color = '#94a3b8';
         btn.dataset.unlockedLv = '0';
       } else {
         const cfg = SL_LEVELS[lv];
-        btn.textContent = lv === 6 ? 'Lv.6 MASTER ★' : `Lv.${lv} 查看卡牌`;
+        btn.textContent = lv === 6 ? 'Lv.6 MASTER ★' : `Lv.${lv} (${lv}/6 課題)`;
         btn.style.borderColor = cfg.hex;
         btn.style.color = cfg.hex;
         btn.dataset.unlockedLv = String(lv);
@@ -6601,7 +6611,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         });
       });
       if (typeof practiceState !== 'undefined' && practiceState && practiceState.done) {
-        syncBadge(Object.keys(practiceState.done).length);
+        syncBadge(practiceState.done);
       }
     }
     if (document.readyState === 'loading') {
@@ -6615,7 +6625,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       close,
       getLevel,
       syncBadge,
-      THRESHOLDS: SL_THRESHOLDS
+      TOPIC_PASS_RATIO: SL_TOPIC_PASS_RATIO
     };
   })();
   </script>
