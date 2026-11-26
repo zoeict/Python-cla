@@ -5957,13 +5957,16 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.18;
+      renderer.domElement.style.width = '100%';
+      renderer.domElement.style.height = '100%';
+      renderer.domElement.style.display = 'block';
       host.innerHTML = '';
       host.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(38, 16 / 9, 0.1, 100);
-      camera.position.set(0, 0.25, 8.8);
-      camera.lookAt(0, -0.25, 0);
+      camera.position.set(0, 0.10, 8.8);
+      camera.lookAt(0, -0.15, 0);
 
       // Lights
       scene.add(new THREE.AmbientLight(0x94a3b8, 0.9));
@@ -6356,22 +6359,37 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       const sparkPoints = new THREE.Points(spGeo, spMat);
       scene.add(sparkPoints);
 
-      // === Responsive Framing via ResizeObserver (iPad Landscape & PC Widescreen) ===
+      // === Responsive Framing (iPad Landscape/Portrait & PC Browser Resize/Zoom) ===
       function updateCameraFraming() {
-        const w = Math.max(1, overlay.clientWidth || window.innerWidth);
-        const h = Math.max(1, overlay.clientHeight || window.innerHeight);
+        const vv = window.visualViewport;
+        const w = Math.max(1, Math.round(overlay.clientWidth || (vv ? vv.width : window.innerWidth)));
+        const h = Math.max(1, Math.round(overlay.clientHeight || (vv ? vv.height : window.innerHeight)));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         renderer.setSize(w, h, false);
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
         camera.aspect = w / h;
-        // Fit full 7.2w x 4.9h bounding stage cleanly without clipping
+        // Fit full stage (8.2w x 5.4h incl. landscape card, dual laser rails & hex pad) cleanly
         const vFov = THREE.MathUtils.degToRad(camera.fov);
-        const distH = (5.0 / 2) / Math.tan(vFov / 2);
-        const distW = (7.4 / 2) / (Math.tan(vFov / 2) * camera.aspect);
-        camera.position.z = Math.max(7.6, distH, distW);
+        const halfTan = Math.tan(vFov / 2);
+        const distH = (5.4 / 2) / halfTan;
+        const distW = (8.2 / 2) / (halfTan * camera.aspect);
+        camera.position.set(0, 0.10, Math.max(7.4, distH, distW));
+        camera.lookAt(0, -0.15, 0);
         camera.updateProjectionMatrix();
+      }
+      function onViewportChange() {
+        updateCameraFraming();
+        setTimeout(updateCameraFraming, 120);
       }
       updateCameraFraming();
       const ro = new ResizeObserver(updateCameraFraming);
       ro.observe(overlay);
+      window.addEventListener('resize', onViewportChange);
+      window.addEventListener('orientationchange', onViewportChange);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', onViewportChange);
+      }
 
       // === Pointer / Touch 3D Tilt ===
       let targetX = 0, targetY = 0, smX = 0, smY = 0;
@@ -6544,6 +6562,11 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         cleanup() {
           cancelAnimationFrame(rafId);
           ro.disconnect();
+          window.removeEventListener('resize', onViewportChange);
+          window.removeEventListener('orientationchange', onViewportChange);
+          if (window.visualViewport) {
+            window.visualViewport.removeEventListener('resize', onViewportChange);
+          }
           overlay.removeEventListener('pointermove', onPointerMove);
           overlay.removeEventListener('touchmove', onPointerMove);
           overlay.removeEventListener('click', onOverlayClick);
