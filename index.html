@@ -2061,6 +2061,54 @@
       }
     }
 
+    async function loadCloudProgressByEmail(email, opts = {}) {
+      const url = getGasUrl();
+      if (!url || !email) return null;
+      const showBanner = Boolean(opts.showBanner);
+      if (showBanner) setCloudSyncBanner('同步中，請稍候', 'info');
+
+      const parseResp = (data) => {
+        if (data && (data.status === 'success' || data.status === 'ok' || data.ok === true)) {
+          if (data.found && data.progress) {
+            return { ...data.progress, _found: true };
+          }
+          if (data.found === false) {
+            return { _found: false, xp: 0, penalty: 0, completed: {}, tbDone: {}, latestCode: {} };
+          }
+        }
+        return null;
+      };
+
+      // 1) 優先使用已驗證 Google ID Token 透過 POST 讀取
+      const idToken = getTeacherIdToken();
+      if (idToken) {
+        try {
+          const postData = await callCloudGrader({
+            action: 'load_progress',
+            idToken,
+            targetEmail: email
+          });
+          const parsed = parseResp(postData);
+          if (parsed) return parsed;
+        } catch (e) {}
+      }
+
+      // 2) 後備：透過 GAS doGet (?action=getProgress&email=...) 雙向拉取（適用於重新開啟瀏覽器或憑證過期時）
+      try {
+        const qs = `action=getProgress&email=${encodeURIComponent(email)}&t=${Date.now()}`;
+        const resp = await fetch(`${url}?${qs}`, { method: 'GET', cache: 'no-store' });
+        if (resp.ok) {
+          const getData = await resp.json();
+          const parsed = parseResp(getData);
+          if (parsed) return parsed;
+        }
+      } catch (e) {}
+
+      if (showBanner) setCloudSyncBanner('⚠ 未能連線 Google Sheet，請檢查網絡（所有進度一律儲存於雲端）', 'warn', 5500);
+      return null;
+    }
+
+    // 雲端與本地進度聯集（Union）合併：永不覆蓋離線已完成題目、取最高分、還原最新程式碼
     function mergeCloudProgress(cloud, opts = {}) {
       if (!cloud) return { mergedLevels: Object.keys(state.completed).length, mergedTb: 0 };
       const validLevelIds = new Set((typeof LEVELS !== 'undefined' ? LEVELS : []).map((l) => l.id));
