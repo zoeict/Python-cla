@@ -731,35 +731,36 @@
       <!-- ===================================================================== -->
       <!-- MODE: STUDENT PROFILE DASHBOARD (個人檔案 — 雲端即時成績 ＋ 能力分佈)   -->
       <!-- ===================================================================== -->
-      <section id="profileContainer" class="hidden p-4 sm:p-6 bg-[#050914] min-h-[calc(100dvh-3.5rem)] space-y-4">
+      <section id="profileContainer" class="hidden bg-[#050914] min-h-[calc(100dvh-3.5rem)] px-3 py-3 sm:px-5 sm:py-3.5">
+        <div class="max-w-[1160px] mx-auto space-y-2.5">
         <!-- Auth Notice Banner (Shown when not logged in or token expired) -->
-        <div id="profAuthNotice" class="hidden rounded-md border border-[#fbbf24]/45 bg-[#1b1407] px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-[#fde68a]">
+        <div id="profAuthNotice" class="hidden rounded-md border border-[#fbbf24]/45 bg-[#1b1407] px-3.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-[#fde68a]">
           <span id="profAuthNoticeText">請先按右上角以學校 Google 帳戶登入，即可檢視你的個人成績檔案。</span>
-          <button id="profReloginBtn" type="button" class="px-3 py-1.5 rounded bg-[#fbbf24] text-[#0b0f19] font-bold text-xs hover:bg-[#fde047] transition">前往登入</button>
+          <button id="profReloginBtn" type="button" class="px-2.5 py-1 rounded bg-[#fbbf24] text-[#0b0f19] font-bold text-xs hover:bg-[#fde047] transition">前往登入</button>
         </div>
 
         <!-- Teacher Preview Selector (Visible ONLY in Teacher Mode) -->
-        <div id="profTeacherBar" class="hidden rounded-md border border-[#fbbf24]/40 bg-[#141008] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+        <div id="profTeacherBar" class="hidden rounded-md border border-[#fbbf24]/40 bg-[#141008] px-3.5 py-1.5 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2 font-mono-code text-xs text-[#fbbf24] font-bold">
             <span>👁 老師預覽模式</span>
-            <span class="text-[#94a3b8] font-normal">選擇學生即時檢視其個人檔案：</span>
+            <span class="text-[#94a3b8] font-normal hidden sm:inline">選擇學生即時檢視個人檔案：</span>
           </div>
-          <select id="profTeacherStudentSelect" class="bg-[#070d18] border border-[#2c405e] rounded px-3 py-1.5 text-xs text-white font-mono-code outline-none focus:border-[#38bdf8] min-w-[220px]">
+          <select id="profTeacherStudentSelect" class="bg-[#070d18] border border-[#2c405e] rounded px-2.5 py-1 text-xs text-white font-mono-code outline-none focus:border-[#38bdf8] min-w-[200px]">
             <option value="">-- 檢視目前登入帳戶 --</option>
           </select>
         </div>
 
-        <!-- 1. Top Student Identity + Python Lab Summary Banner -->
-        <div class="prof-hud-box p-4 sm:p-5">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+        <!-- 1. Compact Top Student Identity + Python Lab Summary Strip -->
+        <div class="prof-hud-box px-3.5 py-2.5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
             <!-- Avatar + Name + Login Status -->
-            <div class="lg:col-span-4 flex items-center gap-3.5 lg:border-r lg:border-[#22d3ee]/20 lg:pr-4">
-              <div class="w-14 h-14 rounded-full border-2 border-[#22d3ee] bg-[#081a30] flex items-center justify-center text-[#38bdf8] shrink-0 shadow-[0_0_16px_rgba(34,211,238,0.35)]">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div class="lg:col-span-4 flex items-center gap-3 lg:border-r lg:border-[#22d3ee]/20 lg:pr-3">
+              <div class="w-10 h-10 rounded-full border-2 border-[#22d3ee] bg-[#081a30] flex items-center justify-center text-[#38bdf8] shrink-0 shadow-[0_0_12px_rgba(34,211,238,0.3)]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
-              <div class="min-w-0 space-y-1">
-                <div id="profIdentityLine" class="font-display text-base sm:text-lg font-bold text-white truncate">尚未登入</div>
-                <div id="profStatusPill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#64748b]/15 border border-[#64748b]/45 text-[#cbd5e1] font-mono-code text-[10px] font-bold">
+              <div class="min-w-0 flex items-center flex-wrap gap-2">
+                <div id="profIdentityLine" class="font-display text-sm sm:text-base font-bold text-white truncate">尚未登入</div>
+                <div id="profStatusPill" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#64748b]/15 border border-[#64748b]/45 text-[#cbd5e1] font-mono-code text-[10px] font-bold">
                   <span id="profStatusDot" class="w-1.5 h-1.5 rounded-full bg-[#94a3b8]"></span>
                   <span id="profStatusLabel">尚未登入</span>
                 </div>
@@ -767,57 +768,43 @@
             </div>
 
             <!-- Total XP + Current Rank -->
-            <div class="lg:col-span-4 grid grid-cols-2 gap-3 lg:border-r lg:border-[#22d3ee]/20 lg:px-2">
-              <div class="space-y-0.5">
-                <div class="flex items-center gap-1 text-[11px] font-bold text-[#94a3b8]">
-                  <span class="text-[#facc15]">★</span><span>總積分</span>
-                </div>
-                <div id="profTotalXp" class="font-mono-code text-xl sm:text-2xl font-bold text-[#22d3ee] tabular-nums leading-tight" style="text-shadow:0 0 12px rgba(34,211,238,0.4);">0 XP</div>
+            <div class="lg:col-span-3 flex items-center justify-between lg:justify-start gap-4 lg:border-r lg:border-[#22d3ee]/20 lg:pr-3">
+              <div>
+                <div class="text-[10px] font-bold text-[#94a3b8]"><span class="text-[#facc15]">★</span> 總積分</div>
+                <div id="profTotalXp" class="font-mono-code text-base sm:text-lg font-bold text-[#22d3ee] tabular-nums leading-tight">0 XP</div>
               </div>
-              <div class="space-y-1">
-                <div class="flex items-center gap-1 text-[11px] font-bold text-[#94a3b8]">
-                  <span class="text-[#facc15]">👑</span><span>目前稱號</span>
-                </div>
-                <div id="profRankTitle" class="font-display text-sm sm:text-base font-bold text-[#facc15] truncate">Python 新手</div>
-                <div class="h-1.5 w-full rounded-full bg-[#091224] border border-[#1e2d44] overflow-hidden">
+              <div class="min-w-[96px] flex-1 max-w-[140px]">
+                <div class="text-[10px] font-bold text-[#94a3b8]"><span class="text-[#facc15]">👑</span> 稱號</div>
+                <div id="profRankTitle" class="font-display text-xs font-bold text-[#facc15] truncate">Python 新手</div>
+                <div class="h-1 w-full rounded-full bg-[#091224] overflow-hidden mt-0.5">
                   <div id="profRankBar" class="h-full rounded-full bg-gradient-to-r from-[#facc15] to-[#fb923c]" style="width:15%"></div>
                 </div>
               </div>
             </div>
 
-            <!-- 3-Module Python Lab Progress Bars -->
-            <div class="lg:col-span-4 space-y-2 font-mono-code text-[11px]">
+            <!-- 3-Module Compact Progress Strip -->
+            <div class="lg:col-span-5 grid grid-cols-3 gap-2.5 font-mono-code text-[11px]">
               <div class="space-y-0.5">
-                <div class="flex items-center justify-between text-[#cbd5e1]">
-                  <span>計分練習</span>
-                  <span id="profQuestStat" class="font-bold text-white tabular-nums">0 / 138</span>
-                </div>
+                <div class="flex items-center justify-between text-[#94a3b8] text-[10px]"><span>計分練習</span><span id="profQuestStat" class="font-bold text-white tabular-nums">0/138</span></div>
                 <div class="h-1.5 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profQuestBar" class="h-full bg-[#38bdf8] transition-all duration-300" style="width:0%"></div></div>
               </div>
               <div class="space-y-0.5">
-                <div class="flex items-center justify-between text-[#cbd5e1]">
-                  <span>課本例題</span>
-                  <span id="profTbStat" class="font-bold text-[#34d399] tabular-nums">0 / 95</span>
-                </div>
+                <div class="flex items-center justify-between text-[#94a3b8] text-[10px]"><span>課本例題</span><span id="profTbStat" class="font-bold text-[#34d399] tabular-nums">0/95</span></div>
                 <div class="h-1.5 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profTbBar" class="h-full bg-[#10b981] transition-all duration-300" style="width:0%"></div></div>
               </div>
               <div class="space-y-0.5">
-                <div class="flex items-center justify-between text-[#cbd5e1]">
-                  <span>額外操練</span>
-                  <span id="profPrStat" class="font-bold text-[#c084fc] tabular-nums">0 / 521</span>
-                </div>
+                <div class="flex items-center justify-between text-[#94a3b8] text-[10px]"><span>額外操練</span><span id="profPrStat" class="font-bold text-[#c084fc] tabular-nums">0/521</span></div>
                 <div class="h-1.5 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profPrBar" class="h-full bg-[#c084fc] transition-all duration-300" style="width:0%"></div></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 2. Hero Spotlight: 平時分 (A2) Golden HUD Banner -->
-        <div class="prof-a2-banner px-5 py-4 sm:px-7 sm:py-5">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-4 sm:gap-5">
-              <!-- Golden Trophy + Laurel SVG -->
-              <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0" style="filter:drop-shadow(0 0 14px rgba(250,204,21,0.55));">
+        <!-- 2. Hero Spotlight: 平時分 (A2) Compact Golden Banner -->
+        <div class="prof-a2-banner px-4 py-2.5 sm:px-5 sm:py-3">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center shrink-0" style="filter:drop-shadow(0 0 12px rgba(250,204,21,0.55));">
                 <svg viewBox="0 0 64 64" class="w-full h-full">
                   <path d="M12 44 C6 36, 6 22, 13 14 M15 48 C10 42, 10 28, 16 20" fill="none" stroke="#facc15" stroke-width="2.4" stroke-linecap="round"/>
                   <path d="M52 44 C58 36, 58 22, 51 14 M49 48 C54 42, 54 28, 48 20" fill="none" stroke="#facc15" stroke-width="2.4" stroke-linecap="round"/>
@@ -828,115 +815,115 @@
                   <defs><linearGradient id="a2GoldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fef08a"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
                 </svg>
               </div>
-              <div>
-                <div class="font-display text-sm sm:text-base font-bold text-[#fde68a] tracking-wide">平時分 (A2)</div>
-                <div class="flex items-baseline gap-2 mt-0.5">
-                  <span id="profA2Score" class="font-mono-code text-4xl sm:text-5xl font-black italic text-[#facc15] tabular-nums leading-none" style="text-shadow:0 0 22px rgba(250,204,21,0.55);">--</span>
-                  <span class="font-mono-code text-lg sm:text-xl font-bold text-[#fde68a]/80">/ 100</span>
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <span class="font-display text-sm font-bold text-[#fde68a] tracking-wide">平時分 (A2)</span>
+                <div class="flex items-baseline gap-1.5">
+                  <span id="profA2Score" class="font-mono-code text-3xl sm:text-4xl font-black italic text-[#facc15] tabular-nums leading-none" style="text-shadow:0 0 18px rgba(250,204,21,0.55);">--</span>
+                  <span class="font-mono-code text-sm sm:text-base font-bold text-[#fde68a]/80">/ 100</span>
                 </div>
               </div>
             </div>
 
-            <div class="flex-1 max-w-md space-y-2.5">
-              <div class="flex items-center justify-end gap-2">
-                <span id="profA2GradeBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#facc15]/15 border border-[#facc15]/55 text-[#fde047] font-display text-sm sm:text-base font-bold tracking-widest" style="text-shadow:0 0 10px rgba(250,204,21,0.45);">尚未公佈</span>
+            <div class="flex-1 max-w-md flex items-center gap-3">
+              <div class="flex-1 h-2.5 rounded-full bg-[#1a1306] border border-[#facc15]/45 p-0.5 overflow-hidden">
+                <div id="profA2Bar" class="h-full rounded-full bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#fb923c] shadow-[0_0_10px_rgba(250,204,21,0.75)] transition-all duration-500" style="width:0%"></div>
               </div>
-              <div class="h-3.5 w-full rounded-full bg-[#1a1306] border border-[#facc15]/45 p-0.5 overflow-hidden">
-                <div id="profA2Bar" class="h-full rounded-full bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#fb923c] shadow-[0_0_12px_rgba(250,204,21,0.75)] transition-all duration-500" style="width:0%"></div>
-              </div>
+              <span id="profA2GradeBadge" class="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-[#facc15]/15 border border-[#facc15]/55 text-[#fde047] font-display text-xs sm:text-sm font-bold tracking-wider shrink-0">尚未公佈</span>
             </div>
           </div>
         </div>
 
-        <!-- 3. Four Sub-Score Cards (文字題 / 編程題 / 功課 / 測驗) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <!-- 3. Four Compact Sub-Score Cards (文字題 / 編程題 / 功課 / 測驗) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
           <!-- 文字題總分 -->
-          <div class="prof-sub-card border border-[#22d3ee]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(34,211,238,0.10)]">
-            <div class="flex items-center gap-3">
-              <span class="w-10 h-10 rounded bg-[#22d3ee]/12 border border-[#22d3ee]/40 text-[#22d3ee] flex items-center justify-center shrink-0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+          <div class="prof-sub-card border border-[#22d3ee]/45 px-3 py-2.5 space-y-1.5 shadow-[0_0_14px_rgba(34,211,238,0.08)]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded bg-[#22d3ee]/12 border border-[#22d3ee]/40 text-[#22d3ee] flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
               </span>
-              <div>
-                <div class="text-xs font-bold text-[#cbd5e1]">文字題總分</div>
-                <div class="flex items-baseline gap-1 mt-0.5">
-                  <span id="profTextScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
-                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+              <div class="min-w-0">
+                <div class="text-[11px] font-bold text-[#94a3b8]">文字題總分</div>
+                <div class="flex items-baseline gap-1">
+                  <span id="profTextScore" class="font-mono-code text-xl font-bold italic text-white tabular-nums leading-tight">--</span>
+                  <span class="font-mono-code text-[11px] text-[#64748b]">/ 100</span>
                 </div>
               </div>
             </div>
-            <div class="h-2 w-full rounded-full bg-[#081224] border border-[#1a2e4a] overflow-hidden">
-              <div id="profTextBar" class="h-full rounded-full bg-gradient-to-r from-[#06b6d4] to-[#22d3ee] shadow-[0_0_8px_#22d3ee] transition-all duration-500" style="width:0%"></div>
+            <div class="h-1.5 w-full rounded-full bg-[#081224] overflow-hidden">
+              <div id="profTextBar" class="h-full rounded-full bg-gradient-to-r from-[#06b6d4] to-[#22d3ee] transition-all duration-500" style="width:0%"></div>
             </div>
           </div>
 
-          <!-- 編程題總分 -->
-          <div class="prof-sub-card border border-[#10b981]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(16,185,129,0.10)]">
-            <div class="flex items-center gap-3">
-              <span class="w-10 h-10 rounded bg-[#10b981]/12 border border-[#10b981]/40 text-[#34d399] flex items-center justify-center shrink-0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/><polyline points="9 9 6 11.5 9 14"/><polyline points="15 9 18 11.5 15 14"/></svg>
+          <!-- 編程題總分 (Auto-calculated from 3 tabs, 100 max) -->
+          <div class="prof-sub-card border border-[#10b981]/45 px-3 py-2.5 space-y-1.5 shadow-[0_0_14px_rgba(16,185,129,0.08)]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded bg-[#10b981]/12 border border-[#10b981]/40 text-[#34d399] flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/><polyline points="9 9 6 11.5 9 14"/><polyline points="15 9 18 11.5 15 14"/></svg>
               </span>
-              <div>
-                <div class="text-xs font-bold text-[#cbd5e1]">編程題總分</div>
-                <div class="flex items-baseline gap-1 mt-0.5">
-                  <span id="profCodeScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
-                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-1">
+                  <span class="text-[11px] font-bold text-[#94a3b8]">編程題總分</span>
+                  <span id="profCodeAutoTag" class="px-1.5 py-0.2 rounded bg-[#10b981]/15 border border-[#10b981]/40 text-[#34d399] font-mono-code text-[9px] font-bold whitespace-nowrap">3分頁自動</span>
+                </div>
+                <div class="flex items-baseline gap-1">
+                  <span id="profCodeScore" class="font-mono-code text-xl font-bold italic text-white tabular-nums leading-tight">--</span>
+                  <span class="font-mono-code text-[11px] text-[#64748b]">/ 100</span>
                 </div>
               </div>
             </div>
-            <div class="h-2 w-full rounded-full bg-[#071a15] border border-[#13382c] overflow-hidden">
-              <div id="profCodeBar" class="h-full rounded-full bg-gradient-to-r from-[#059669] to-[#34d399] shadow-[0_0_8px_#34d399] transition-all duration-500" style="width:0%"></div>
+            <div class="h-1.5 w-full rounded-full bg-[#071a15] overflow-hidden">
+              <div id="profCodeBar" class="h-full rounded-full bg-gradient-to-r from-[#059669] to-[#34d399] transition-all duration-500" style="width:0%"></div>
             </div>
           </div>
 
           <!-- 功課總分 -->
-          <div class="prof-sub-card border border-[#c084fc]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(192,132,252,0.10)]">
-            <div class="flex items-center gap-3">
-              <span class="w-10 h-10 rounded bg-[#c084fc]/12 border border-[#c084fc]/40 text-[#c084fc] flex items-center justify-center shrink-0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>
+          <div class="prof-sub-card border border-[#c084fc]/45 px-3 py-2.5 space-y-1.5 shadow-[0_0_14px_rgba(192,132,252,0.08)]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded bg-[#c084fc]/12 border border-[#c084fc]/40 text-[#c084fc] flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>
               </span>
-              <div>
-                <div class="text-xs font-bold text-[#cbd5e1]">功課總分</div>
-                <div class="flex items-baseline gap-1 mt-0.5">
-                  <span id="profHwScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
-                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+              <div class="min-w-0">
+                <div class="text-[11px] font-bold text-[#94a3b8]">功課總分</div>
+                <div class="flex items-baseline gap-1">
+                  <span id="profHwScore" class="font-mono-code text-xl font-bold italic text-white tabular-nums leading-tight">--</span>
+                  <span class="font-mono-code text-[11px] text-[#64748b]">/ 100</span>
                 </div>
               </div>
             </div>
-            <div class="h-2 w-full rounded-full bg-[#150b24] border border-[#2f1b47] overflow-hidden">
-              <div id="profHwBar" class="h-full rounded-full bg-gradient-to-r from-[#9333ea] to-[#c084fc] shadow-[0_0_8px_#c084fc] transition-all duration-500" style="width:0%"></div>
+            <div class="h-1.5 w-full rounded-full bg-[#150b24] overflow-hidden">
+              <div id="profHwBar" class="h-full rounded-full bg-gradient-to-r from-[#9333ea] to-[#c084fc] transition-all duration-500" style="width:0%"></div>
             </div>
           </div>
 
           <!-- 測驗總分 -->
-          <div class="prof-sub-card border border-[#fb923c]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(251,146,60,0.10)]">
-            <div class="flex items-center gap-3">
-              <span class="w-10 h-10 rounded bg-[#fb923c]/12 border border-[#fb923c]/40 text-[#fb923c] flex items-center justify-center shrink-0">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><polyline points="9 12 11 14 15 10"/></svg>
+          <div class="prof-sub-card border border-[#fb923c]/45 px-3 py-2.5 space-y-1.5 shadow-[0_0_14px_rgba(251,146,60,0.08)]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded bg-[#fb923c]/12 border border-[#fb923c]/40 text-[#fb923c] flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><polyline points="9 12 11 14 15 10"/></svg>
               </span>
-              <div>
-                <div class="text-xs font-bold text-[#cbd5e1]">測驗總分</div>
-                <div class="flex items-baseline gap-1 mt-0.5">
-                  <span id="profTestScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
-                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+              <div class="min-w-0">
+                <div class="text-[11px] font-bold text-[#94a3b8]">測驗總分</div>
+                <div class="flex items-baseline gap-1">
+                  <span id="profTestScore" class="font-mono-code text-xl font-bold italic text-white tabular-nums leading-tight">--</span>
+                  <span class="font-mono-code text-[11px] text-[#64748b]">/ 100</span>
                 </div>
               </div>
             </div>
-            <div class="h-2 w-full rounded-full bg-[#1e1207] border border-[#42280f] overflow-hidden">
-              <div id="profTestBar" class="h-full rounded-full bg-gradient-to-r from-[#ea580c] to-[#fb923c] shadow-[0_0_8px_#fb923c] transition-all duration-500" style="width:0%"></div>
+            <div class="h-1.5 w-full rounded-full bg-[#1e1207] overflow-hidden">
+              <div id="profTestBar" class="h-full rounded-full bg-gradient-to-r from-[#ea580c] to-[#fb923c] transition-all duration-500" style="width:0%"></div>
             </div>
           </div>
         </div>
 
-        <!-- 4. Bottom 2-Column: 能力分佈 (Radar + Bars) & 老師評語 -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- 4. Compact Bottom 2-Column: 能力分佈 (Radar + Bars) & 老師評語 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5">
           <!-- Left: Ability Distribution Radar & Bars -->
-          <div class="lg:col-span-5 prof-hud-box p-4 sm:p-5 space-y-3">
-            <div class="flex items-center gap-2 font-display text-sm font-bold text-white">
+          <div class="lg:col-span-5 prof-hud-box px-3.5 py-3 space-y-2">
+            <div class="flex items-center gap-1.5 font-display text-xs font-bold text-white">
               <span class="text-[#22d3ee]">▮</span><span>能力分佈</span>
             </div>
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-              <!-- Dynamic 4-Axis SVG Radar Chart -->
-              <svg id="profRadarSvg" viewBox="0 0 200 180" class="w-44 h-40 shrink-0">
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+              <svg id="profRadarSvg" viewBox="0 0 200 180" class="w-36 h-32 shrink-0">
                 <polygon points="100,24 166,90 100,156 34,90" fill="none" stroke="#1e3556" stroke-width="1"/>
                 <polygon points="100,46 144,90 100,134 56,90" fill="none" stroke="#182b47" stroke-width="1"/>
                 <polygon points="100,68 122,90 100,112 78,90" fill="none" stroke="#14233b" stroke-width="1"/>
@@ -953,29 +940,28 @@
                 <text x="16" y="94" text-anchor="middle" fill="#cbd5e1" font-size="11" font-weight="bold">測驗</text>
               </svg>
 
-              <!-- 4 Horizontal Breakdown Bars -->
-              <div class="flex-1 w-full space-y-2.5 font-mono-code text-[11px]">
+              <div class="flex-1 w-full space-y-1.5 font-mono-code text-[11px]">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-[#22d3ee] shrink-0"></span>
-                  <span class="w-12 text-[#cbd5e1] shrink-0">文字題</span>
+                  <span class="w-11 text-[#cbd5e1] shrink-0">文字題</span>
                   <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniTextBar" class="h-full bg-[#22d3ee]" style="width:0%"></div></div>
                   <span id="profMiniTextPct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-[#34d399] shrink-0"></span>
-                  <span class="w-12 text-[#cbd5e1] shrink-0">編程題</span>
+                  <span class="w-11 text-[#cbd5e1] shrink-0">編程題</span>
                   <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniCodeBar" class="h-full bg-[#34d399]" style="width:0%"></div></div>
                   <span id="profMiniCodePct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-[#c084fc] shrink-0"></span>
-                  <span class="w-12 text-[#cbd5e1] shrink-0">功課</span>
+                  <span class="w-11 text-[#cbd5e1] shrink-0">功課</span>
                   <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniHwBar" class="h-full bg-[#c084fc]" style="width:0%"></div></div>
                   <span id="profMiniHwPct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-[#fb923c] shrink-0"></span>
-                  <span class="w-12 text-[#cbd5e1] shrink-0">測驗</span>
+                  <span class="w-11 text-[#cbd5e1] shrink-0">測驗</span>
                   <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniTestBar" class="h-full bg-[#fb923c]" style="width:0%"></div></div>
                   <span id="profMiniTestPct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
                 </div>
@@ -984,28 +970,29 @@
           </div>
 
           <!-- Right: Teacher Feedback Terminal Box + Refresh -->
-          <div class="lg:col-span-7 prof-hud-box p-4 sm:p-5 flex flex-col justify-between gap-4">
-            <div class="space-y-3">
-              <div class="flex items-center gap-2 font-display text-sm font-bold text-white">
+          <div class="lg:col-span-7 prof-hud-box px-3.5 py-3 flex flex-col justify-between gap-2.5">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-1.5 font-display text-xs font-bold text-white">
                 <span class="text-[#22d3ee]">💬</span><span>老師評語</span>
               </div>
-              <div class="rounded bg-[#071124]/90 border border-[#22d3ee]/30 p-4 min-h-[104px] flex items-start gap-3">
-                <span class="text-[#facc15] text-lg leading-none mt-0.5 shrink-0">★</span>
-                <div id="profFeedbackText" class="text-sm text-[#e2e8f0] leading-relaxed whitespace-pre-line">載入個人成績與老師評語中...</div>
+              <div class="rounded bg-[#071124]/90 border border-[#22d3ee]/30 px-3 py-2.5 min-h-[68px] flex items-start gap-2.5">
+                <span class="text-[#facc15] text-base leading-none mt-0.5 shrink-0">★</span>
+                <div id="profFeedbackText" class="text-xs sm:text-sm text-[#e2e8f0] leading-relaxed whitespace-pre-line">載入個人成績與老師評語中...</div>
               </div>
             </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-              <div class="flex items-center gap-1.5 font-mono-code text-xs text-[#94a3b8]">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5 font-mono-code text-[11px] text-[#94a3b8]">
                 <span>🕒 最後更新：</span>
                 <span id="profUpdatedAt" class="text-[#cbd5e1] font-bold">--</span>
               </div>
-              <button id="profRefreshBtn" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#0c233a] hover:bg-[#133558] border border-[#22d3ee]/60 text-[#e0f2fe] font-mono-code text-xs font-bold shadow-[0_0_12px_rgba(34,211,238,0.22)] transition">
-                <svg id="profRefreshIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+              <button id="profRefreshBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0c233a] hover:bg-[#133558] border border-[#22d3ee]/60 text-[#e0f2fe] font-mono-code text-[11px] font-bold shadow-[0_0_10px_rgba(34,211,238,0.2)] transition">
+                <svg id="profRefreshIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
                 <span>重新整理成績</span>
               </button>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
@@ -7610,9 +7597,18 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         else a2Badge.textContent = '繼續努力';
       }
 
-      // 4 Sub-Scores + Radar
+      // 4 Sub-Scores + Radar (編程題總分若未手動填寫，自動綜合 3 個分頁計算滿分 100)
+      const qD = Number(p.questDone || 0), tbD = Number(p.tbDone || 0), prD = Number(p.prDone || 0);
+      const qT = Number(p.questTotal || 138), tbT = Number(p.tbTotal || 95), prT = Number(p.prTotal || 521);
+      const allT = qT + tbT + prT;
+      const autoCode = allT > 0 ? Math.round(((qD + tbD + prD) / allT) * 1000) / 10 : 0;
+      const isAutoCode = (gr.codeScore === null || gr.codeScore === undefined || gr.codeScoreAuto === true);
+      const effectiveCodeScore = (gr.codeScore !== null && gr.codeScore !== undefined) ? gr.codeScore : autoCode;
+      const autoTag = document.getElementById('profCodeAutoTag');
+      if (autoTag) autoTag.classList.toggle('hidden', !isAutoCode);
+
       const pText = setScoreDisplay('profTextScore', 'profTextBar', 'profMiniTextBar', 'profMiniTextPct', gr.textScore);
-      const pCode = setScoreDisplay('profCodeScore', 'profCodeBar', 'profMiniCodeBar', 'profMiniCodePct', gr.codeScore);
+      const pCode = setScoreDisplay('profCodeScore', 'profCodeBar', 'profMiniCodeBar', 'profMiniCodePct', effectiveCodeScore);
       const pHw = setScoreDisplay('profHwScore', 'profHwBar', 'profMiniHwBar', 'profMiniHwPct', gr.hwScore);
       const pTest = setScoreDisplay('profTestScore', 'profTestBar', 'profMiniTestBar', 'profMiniTestPct', gr.testScore);
       updateRadar(pText, pCode, pHw, pTest);
@@ -7685,9 +7681,9 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         if (t) t.textContent = `${done} / ${total}`;
         if (b) b.style.width = `${total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0}%`;
       };
-      setMini('profQuestCount', 'profQuestBar', qDone, qTotal);
-      setMini('profTbCount', 'profTbBar', tbDone, tbTotal);
-      setMini('profPrCount', 'profPrBar', prDone, prTotal);
+      setMini('profQuestStat', 'profQuestBar', qDone, qTotal);
+      setMini('profTbStat', 'profTbBar', tbDone, tbTotal);
+      setMini('profPrStat', 'profPrBar', prDone, prTotal);
       return true;
     }
 
