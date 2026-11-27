@@ -341,7 +341,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 9px;
       padding: 12px 26px;
       border-radius: 999px;
       backdrop-filter: blur(16px);
@@ -381,8 +381,8 @@
       position: relative;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 8px 14px 8px 16px;
+      gap: 9px;
+      padding: 4px 12px 4px 14px;
       border-top: 1px solid rgba(56, 189, 248, 0.13);
       border-bottom: 1px solid rgba(56, 189, 248, 0.07);
       background: linear-gradient(90deg, rgba(14, 26, 48, 0.55) 0%, rgba(7, 13, 25, 0.2) 70%, rgba(7, 13, 25, 0.0) 100%);
@@ -414,6 +414,28 @@
       box-shadow: 0 0 8px rgba(56, 189, 248, 0.55);
     }
 
+  
+    /* === Student Profile Neon Cyber Dashboard === */
+    .prof-hud-box {
+      position: relative;
+      background: linear-gradient(180deg, rgba(10, 19, 38, 0.92) 0%, rgba(5, 10, 22, 0.97) 100%);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+      box-shadow: inset 0 0 24px rgba(34, 211, 238, 0.08);
+    }
+    .prof-a2-banner {
+      position: relative;
+      background: linear-gradient(90deg, rgba(45, 31, 6, 0.95) 0%, rgba(20, 16, 10, 0.96) 55%, rgba(38, 28, 7, 0.94) 100%);
+      border: 1.5px solid rgba(250, 204, 21, 0.72);
+      clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px);
+      box-shadow: 0 0 28px rgba(250, 204, 21, 0.14), inset 0 0 26px rgba(250, 204, 21, 0.08);
+    }
+    .prof-sub-card {
+      position: relative;
+      background: linear-gradient(180deg, rgba(9, 17, 34, 0.94) 0%, rgba(5, 10, 21, 0.98) 100%);
+      clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+    }
+
   </style>
 </head>
 <body class="antialiased selection:bg-[#38bdf8] selection:text-[#04131e]">
@@ -438,6 +460,7 @@
       <div class="flex items-center gap-1.5 order-3 sm:order-2 w-full sm:w-auto overflow-x-auto touch-scroll-x pb-0.5 sm:pb-0">
         <div class="flex items-center gap-0.5 rounded bg-[#0a111d] border border-[#1d2b40] p-1 text-[11px] sm:text-xs font-bold shrink-0">
           <button id="modeHomeBtn" class="px-3 py-1.5 rounded-[3px] bg-[#38bdf8] text-[#04131e] font-bold shadow-[0_0_12px_rgba(56,189,248,0.22)] transition whitespace-nowrap">首頁</button>
+          <button id="modeProfileBtn" class="px-3 py-1.5 rounded-[3px] text-[#9aa7b8] hover:text-white hover:bg-[#132035] transition whitespace-nowrap">個人檔案</button>
           <button id="modeQuestBtn" class="px-3 py-1.5 rounded-[3px] text-[#9aa7b8] hover:text-white hover:bg-[#132035] transition whitespace-nowrap">計分練習</button>
           <button id="modeTextbookBtn" class="px-3 py-1.5 rounded-[3px] text-[#9aa7b8] hover:text-white hover:bg-[#132035] transition whitespace-nowrap">課本例題</button>
           <button id="modeExtraBtn" class="px-3 py-1.5 rounded-[3px] text-[#9aa7b8] hover:text-white hover:bg-[#132035] transition whitespace-nowrap">額外操練</button>
@@ -589,14 +612,14 @@
 
 
         <!-- Dual Cyber Tech HUD Leaderboard (TOP 5 // 總分榜 + TOP 5 // 自學分榜) -->
-        <section id="homeLeaderboardSection" class="p-5 sm:p-7 bg-[#070b18]/98">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <section id="homeLeaderboardSection" class="px-5 py-3.5 sm:px-7 sm:py-4 bg-[#070b18]/98">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
             <!-- Left HUD Card: TOP 5 // 總分榜 -->
             <div class="cyber-hud-wrap">
-              <div class="cyber-hud-card p-3.5 sm:p-4 flex flex-col justify-between h-full">
+              <div class="cyber-hud-card px-3.5 py-2.5 sm:px-4 sm:py-3 flex flex-col justify-between h-full">
                 <!-- Header -->
-                <div class="flex items-center justify-between gap-2 pb-2.5 mb-2 border-b border-[#22d3ee]/25 pr-1">
+                <div class="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-[#22d3ee]/25 pr-1">
                   <div class="flex items-center gap-2.5 min-w-0">
                     <span class="text-[#22d3ee] shrink-0" style="filter:drop-shadow(0 0 8px rgba(34,211,238,0.65));">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
@@ -618,12 +641,12 @@
                 </div>
 
                 <!-- Top 5 Rows -->
-                <div id="lbOverallList" class="space-y-1.5 flex-1">
+                <div id="lbOverallList" class="space-y-1 flex-1">
                   <div class="py-8 text-center font-mono-code text-xs text-[#64748b]">正在載入總分榜...</div>
                 </div>
 
                 <!-- Bottom Tech Accent + My Rank -->
-                <div class="mt-2.5 pt-2 border-t border-[#22d3ee]/15 flex items-center justify-between gap-2 text-[11px] font-mono-code">
+                <div class="mt-1.5 pt-1.5 border-t border-[#22d3ee]/15 flex items-center justify-between gap-2 text-[10px] font-mono-code">
                   <span class="w-12 h-[3px] rounded-full bg-[#22d3ee]/70 shadow-[0_0_8px_#22d3ee]"></span>
                   <span id="lbOverallMyRank" class="text-[#38bdf8] font-bold truncate"></span>
                   <span class="w-16 h-[3px] rounded-full bg-gradient-to-r from-transparent to-[#22d3ee]/80"></span>
@@ -633,9 +656,9 @@
 
             <!-- Right HUD Card: TOP 5 // 自學分榜 -->
             <div class="cyber-hud-wrap">
-              <div class="cyber-hud-card p-3.5 sm:p-4 flex flex-col justify-between h-full">
+              <div class="cyber-hud-card px-3.5 py-2.5 sm:px-4 sm:py-3 flex flex-col justify-between h-full">
                 <!-- Header -->
-                <div class="flex items-center justify-between gap-2 pb-2.5 mb-2 border-b border-[#22d3ee]/25 pr-1">
+                <div class="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-[#22d3ee]/25 pr-1">
                   <div class="flex items-center gap-2.5 min-w-0">
                     <span class="text-[#22d3ee] shrink-0" style="filter:drop-shadow(0 0 8px rgba(34,211,238,0.65));">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
@@ -652,12 +675,12 @@
                 </div>
 
                 <!-- Top 5 Rows -->
-                <div id="lbSelfList" class="space-y-1.5 flex-1">
+                <div id="lbSelfList" class="space-y-1 flex-1">
                   <div class="py-8 text-center font-mono-code text-xs text-[#64748b]">正在載入自學分榜...</div>
                 </div>
 
                 <!-- Bottom Tech Accent + My Rank -->
-                <div class="mt-2.5 pt-2 border-t border-[#22d3ee]/15 flex items-center justify-between gap-2 text-[11px] font-mono-code">
+                <div class="mt-1.5 pt-1.5 border-t border-[#22d3ee]/15 flex items-center justify-between gap-2 text-[10px] font-mono-code">
                   <span class="w-12 h-[3px] rounded-full bg-[#22d3ee]/70 shadow-[0_0_8px_#22d3ee]"></span>
                   <span id="lbSelfMyRank" class="text-[#38bdf8] font-bold truncate"></span>
                   <span class="w-16 h-[3px] rounded-full bg-gradient-to-r from-transparent to-[#22d3ee]/80"></span>
@@ -703,6 +726,288 @@
           </div>
         </section>
       </div>
+
+
+      <!-- ===================================================================== -->
+      <!-- MODE: STUDENT PROFILE DASHBOARD (個人檔案 — 雲端即時成績 ＋ 能力分佈)   -->
+      <!-- ===================================================================== -->
+      <section id="profileContainer" class="hidden p-4 sm:p-6 bg-[#050914] min-h-[calc(100dvh-3.5rem)] space-y-4">
+        <!-- Auth Notice Banner (Shown when not logged in or token expired) -->
+        <div id="profAuthNotice" class="hidden rounded-md border border-[#fbbf24]/45 bg-[#1b1407] px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-[#fde68a]">
+          <span id="profAuthNoticeText">請先按右上角以學校 Google 帳戶登入，即可檢視你的個人成績檔案。</span>
+          <button id="profReloginBtn" type="button" class="px-3 py-1.5 rounded bg-[#fbbf24] text-[#0b0f19] font-bold text-xs hover:bg-[#fde047] transition">前往登入</button>
+        </div>
+
+        <!-- Teacher Preview Selector (Visible ONLY in Teacher Mode) -->
+        <div id="profTeacherBar" class="hidden rounded-md border border-[#fbbf24]/40 bg-[#141008] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2 font-mono-code text-xs text-[#fbbf24] font-bold">
+            <span>👁 老師預覽模式</span>
+            <span class="text-[#94a3b8] font-normal">選擇學生即時檢視其個人檔案：</span>
+          </div>
+          <select id="profTeacherStudentSelect" class="bg-[#070d18] border border-[#2c405e] rounded px-3 py-1.5 text-xs text-white font-mono-code outline-none focus:border-[#38bdf8] min-w-[220px]">
+            <option value="">-- 檢視目前登入帳戶 --</option>
+          </select>
+        </div>
+
+        <!-- 1. Top Student Identity + Python Lab Summary Banner -->
+        <div class="prof-hud-box p-4 sm:p-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <!-- Avatar + Name + Login Status -->
+            <div class="lg:col-span-4 flex items-center gap-3.5 lg:border-r lg:border-[#22d3ee]/20 lg:pr-4">
+              <div class="w-14 h-14 rounded-full border-2 border-[#22d3ee] bg-[#081a30] flex items-center justify-center text-[#38bdf8] shrink-0 shadow-[0_0_16px_rgba(34,211,238,0.35)]">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="min-w-0 space-y-1">
+                <div id="profIdentityLine" class="font-display text-base sm:text-lg font-bold text-white truncate">尚未登入</div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#10b981]/15 border border-[#10b981]/45 text-[#34d399] font-mono-code text-[10px] font-bold">
+                  <span id="profStatusDot" class="w-1.5 h-1.5 rounded-full bg-[#34d399] shadow-[0_0_6px_#34d399]"></span>
+                  <span id="profStatusLabel">已登入</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total XP + Current Rank -->
+            <div class="lg:col-span-4 grid grid-cols-2 gap-3 lg:border-r lg:border-[#22d3ee]/20 lg:px-2">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-1 text-[11px] font-bold text-[#94a3b8]">
+                  <span class="text-[#facc15]">★</span><span>總積分</span>
+                </div>
+                <div id="profTotalXp" class="font-mono-code text-xl sm:text-2xl font-bold text-[#22d3ee] tabular-nums leading-tight" style="text-shadow:0 0 12px rgba(34,211,238,0.4);">0 XP</div>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-1 text-[11px] font-bold text-[#94a3b8]">
+                  <span class="text-[#facc15]">👑</span><span>目前稱號</span>
+                </div>
+                <div id="profRankTitle" class="font-display text-sm sm:text-base font-bold text-[#facc15] truncate">Python 新手</div>
+                <div class="h-1.5 w-full rounded-full bg-[#091224] border border-[#1e2d44] overflow-hidden">
+                  <div id="profRankBar" class="h-full rounded-full bg-gradient-to-r from-[#facc15] to-[#fb923c]" style="width:15%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3-Module Python Lab Progress Bars -->
+            <div class="lg:col-span-4 space-y-2 font-mono-code text-[11px]">
+              <div class="space-y-0.5">
+                <div class="flex items-center justify-between text-[#cbd5e1]">
+                  <span>計分練習</span>
+                  <span id="profQuestStat" class="font-bold text-white tabular-nums">0 / 138</span>
+                </div>
+                <div class="h-1.5 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profQuestBar" class="h-full bg-[#38bdf8] transition-all duration-300" style="width:0%"></div></div>
+              </div>
+              <div class="space-y-0.5">
+                <div class="flex items-center justify-between text-[#cbd5e1]">
+                  <span>課本例題</span>
+                  <span id="profTbStat" class="font-bold text-[#34d399] tabular-nums">0 / 95</span>
+                </div>
+                <div class="h-1.5 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profTbBar" class="h-full bg-[#10b981] transition-all duration-300" style="width:0%"></div></div>
+              </div>
+              <div class="space-y-0.5">
+                <div class="flex items-center justify-between text-[#cbd5e1]">
+                  <span>額外操練</span>
+                  <span id="profPrStat" class="font-bold text-[#c084fc] tabular-nums">0 / 521</span>
+                </div>
+                <div class="h-1.5 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profPrBar" class="h-full bg-[#c084fc] transition-all duration-300" style="width:0%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Hero Spotlight: 平時分 (A2) Golden HUD Banner -->
+        <div class="prof-a2-banner px-5 py-4 sm:px-7 sm:py-5">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4 sm:gap-5">
+              <!-- Golden Trophy + Laurel SVG -->
+              <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0" style="filter:drop-shadow(0 0 14px rgba(250,204,21,0.55));">
+                <svg viewBox="0 0 64 64" class="w-full h-full">
+                  <path d="M12 44 C6 36, 6 22, 13 14 M15 48 C10 42, 10 28, 16 20" fill="none" stroke="#facc15" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M52 44 C58 36, 58 22, 51 14 M49 48 C54 42, 54 28, 48 20" fill="none" stroke="#facc15" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M22 14 H42 V28 C42 35, 37.5 40, 32 40 C26.5 40, 22 35, 22 28 Z" fill="url(#a2GoldGrad)" stroke="#fef08a" stroke-width="1.5"/>
+                  <path d="M22 18 H15 C15 26, 18 30, 22 30 M42 18 H49 C49 26, 46 30, 42 30" fill="none" stroke="#facc15" stroke-width="2.6" stroke-linecap="round"/>
+                  <rect x="29" y="40" width="6" height="8" fill="#eab308"/>
+                  <rect x="21" y="48" width="22" height="5" rx="2" fill="#facc15"/>
+                  <defs><linearGradient id="a2GoldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fef08a"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+                </svg>
+              </div>
+              <div>
+                <div class="font-display text-sm sm:text-base font-bold text-[#fde68a] tracking-wide">平時分 (A2)</div>
+                <div class="flex items-baseline gap-2 mt-0.5">
+                  <span id="profA2Score" class="font-mono-code text-4xl sm:text-5xl font-black italic text-[#facc15] tabular-nums leading-none" style="text-shadow:0 0 22px rgba(250,204,21,0.55);">--</span>
+                  <span class="font-mono-code text-lg sm:text-xl font-bold text-[#fde68a]/80">/ 100</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-1 max-w-md space-y-2.5">
+              <div class="flex items-center justify-end gap-2">
+                <span id="profA2GradeBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#facc15]/15 border border-[#facc15]/55 text-[#fde047] font-display text-sm sm:text-base font-bold tracking-widest" style="text-shadow:0 0 10px rgba(250,204,21,0.45);">尚未公佈</span>
+              </div>
+              <div class="h-3.5 w-full rounded-full bg-[#1a1306] border border-[#facc15]/45 p-0.5 overflow-hidden">
+                <div id="profA2Bar" class="h-full rounded-full bg-gradient-to-r from-[#facc15] via-[#fde047] to-[#fb923c] shadow-[0_0_12px_rgba(250,204,21,0.75)] transition-all duration-500" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Four Sub-Score Cards (文字題 / 編程題 / 功課 / 測驗) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <!-- 文字題總分 -->
+          <div class="prof-sub-card border border-[#22d3ee]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(34,211,238,0.10)]">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded bg-[#22d3ee]/12 border border-[#22d3ee]/40 text-[#22d3ee] flex items-center justify-center shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+              </span>
+              <div>
+                <div class="text-xs font-bold text-[#cbd5e1]">文字題總分</div>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <span id="profTextScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
+                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+                </div>
+              </div>
+            </div>
+            <div class="h-2 w-full rounded-full bg-[#081224] border border-[#1a2e4a] overflow-hidden">
+              <div id="profTextBar" class="h-full rounded-full bg-gradient-to-r from-[#06b6d4] to-[#22d3ee] shadow-[0_0_8px_#22d3ee] transition-all duration-500" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- 編程題總分 -->
+          <div class="prof-sub-card border border-[#10b981]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(16,185,129,0.10)]">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded bg-[#10b981]/12 border border-[#10b981]/40 text-[#34d399] flex items-center justify-center shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/><polyline points="9 9 6 11.5 9 14"/><polyline points="15 9 18 11.5 15 14"/></svg>
+              </span>
+              <div>
+                <div class="text-xs font-bold text-[#cbd5e1]">編程題總分</div>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <span id="profCodeScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
+                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+                </div>
+              </div>
+            </div>
+            <div class="h-2 w-full rounded-full bg-[#071a15] border border-[#13382c] overflow-hidden">
+              <div id="profCodeBar" class="h-full rounded-full bg-gradient-to-r from-[#059669] to-[#34d399] shadow-[0_0_8px_#34d399] transition-all duration-500" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- 功課總分 -->
+          <div class="prof-sub-card border border-[#c084fc]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(192,132,252,0.10)]">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded bg-[#c084fc]/12 border border-[#c084fc]/40 text-[#c084fc] flex items-center justify-center shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>
+              </span>
+              <div>
+                <div class="text-xs font-bold text-[#cbd5e1]">功課總分</div>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <span id="profHwScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
+                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+                </div>
+              </div>
+            </div>
+            <div class="h-2 w-full rounded-full bg-[#150b24] border border-[#2f1b47] overflow-hidden">
+              <div id="profHwBar" class="h-full rounded-full bg-gradient-to-r from-[#9333ea] to-[#c084fc] shadow-[0_0_8px_#c084fc] transition-all duration-500" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- 測驗總分 -->
+          <div class="prof-sub-card border border-[#fb923c]/50 p-4 space-y-3 shadow-[0_0_18px_rgba(251,146,60,0.10)]">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded bg-[#fb923c]/12 border border-[#fb923c]/40 text-[#fb923c] flex items-center justify-center shrink-0">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><polyline points="9 12 11 14 15 10"/></svg>
+              </span>
+              <div>
+                <div class="text-xs font-bold text-[#cbd5e1]">測驗總分</div>
+                <div class="flex items-baseline gap-1 mt-0.5">
+                  <span id="profTestScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums">--</span>
+                  <span class="font-mono-code text-xs text-[#64748b]">/ 100</span>
+                </div>
+              </div>
+            </div>
+            <div class="h-2 w-full rounded-full bg-[#1e1207] border border-[#42280f] overflow-hidden">
+              <div id="profTestBar" class="h-full rounded-full bg-gradient-to-r from-[#ea580c] to-[#fb923c] shadow-[0_0_8px_#fb923c] transition-all duration-500" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Bottom 2-Column: 能力分佈 (Radar + Bars) & 老師評語 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left: Ability Distribution Radar & Bars -->
+          <div class="lg:col-span-5 prof-hud-box p-4 sm:p-5 space-y-3">
+            <div class="flex items-center gap-2 font-display text-sm font-bold text-white">
+              <span class="text-[#22d3ee]">▮</span><span>能力分佈</span>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+              <!-- Dynamic 4-Axis SVG Radar Chart -->
+              <svg id="profRadarSvg" viewBox="0 0 200 180" class="w-44 h-40 shrink-0">
+                <polygon points="100,24 166,90 100,156 34,90" fill="none" stroke="#1e3556" stroke-width="1"/>
+                <polygon points="100,46 144,90 100,134 56,90" fill="none" stroke="#182b47" stroke-width="1"/>
+                <polygon points="100,68 122,90 100,112 78,90" fill="none" stroke="#14233b" stroke-width="1"/>
+                <line x1="100" y1="24" x2="100" y2="156" stroke="#1e3556" stroke-width="1"/>
+                <line x1="34" y1="90" x2="166" y2="90" stroke="#1e3556" stroke-width="1"/>
+                <polygon id="profRadarPoly" points="100,90 100,90 100,90 100,90" fill="rgba(34,211,238,0.26)" stroke="#22d3ee" stroke-width="2"/>
+                <circle id="profDotTop" cx="100" cy="90" r="3.5" fill="#22d3ee"/>
+                <circle id="profDotRight" cx="100" cy="90" r="3.5" fill="#34d399"/>
+                <circle id="profDotBottom" cx="100" cy="90" r="3.5" fill="#c084fc"/>
+                <circle id="profDotLeft" cx="100" cy="90" r="3.5" fill="#fb923c"/>
+                <text x="100" y="14" text-anchor="middle" fill="#cbd5e1" font-size="11" font-weight="bold">文字題</text>
+                <text x="184" y="94" text-anchor="middle" fill="#cbd5e1" font-size="11" font-weight="bold">編程題</text>
+                <text x="100" y="172" text-anchor="middle" fill="#cbd5e1" font-size="11" font-weight="bold">功課</text>
+                <text x="16" y="94" text-anchor="middle" fill="#cbd5e1" font-size="11" font-weight="bold">測驗</text>
+              </svg>
+
+              <!-- 4 Horizontal Breakdown Bars -->
+              <div class="flex-1 w-full space-y-2.5 font-mono-code text-[11px]">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#22d3ee] shrink-0"></span>
+                  <span class="w-12 text-[#cbd5e1] shrink-0">文字題</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniTextBar" class="h-full bg-[#22d3ee]" style="width:0%"></div></div>
+                  <span id="profMiniTextPct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#34d399] shrink-0"></span>
+                  <span class="w-12 text-[#cbd5e1] shrink-0">編程題</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniCodeBar" class="h-full bg-[#34d399]" style="width:0%"></div></div>
+                  <span id="profMiniCodePct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#c084fc] shrink-0"></span>
+                  <span class="w-12 text-[#cbd5e1] shrink-0">功課</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniHwBar" class="h-full bg-[#c084fc]" style="width:0%"></div></div>
+                  <span id="profMiniHwPct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#fb923c] shrink-0"></span>
+                  <span class="w-12 text-[#cbd5e1] shrink-0">測驗</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-[#081224] overflow-hidden"><div id="profMiniTestBar" class="h-full bg-[#fb923c]" style="width:0%"></div></div>
+                  <span id="profMiniTestPct" class="w-9 text-right text-white font-bold tabular-nums">--%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Teacher Feedback Terminal Box + Refresh -->
+          <div class="lg:col-span-7 prof-hud-box p-4 sm:p-5 flex flex-col justify-between gap-4">
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 font-display text-sm font-bold text-white">
+                <span class="text-[#22d3ee]">💬</span><span>老師評語</span>
+              </div>
+              <div class="rounded bg-[#071124]/90 border border-[#22d3ee]/30 p-4 min-h-[104px] flex items-start gap-3">
+                <span class="text-[#facc15] text-lg leading-none mt-0.5 shrink-0">★</span>
+                <div id="profFeedbackText" class="text-sm text-[#e2e8f0] leading-relaxed whitespace-pre-line">載入個人成績與老師評語中...</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div class="flex items-center gap-1.5 font-mono-code text-xs text-[#94a3b8]">
+                <span>🕒 最後更新：</span>
+                <span id="profUpdatedAt" class="text-[#cbd5e1] font-bold">--</span>
+              </div>
+              <button id="profRefreshBtn" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#0c233a] hover:bg-[#133558] border border-[#22d3ee]/60 text-[#e0f2fe] font-mono-code text-xs font-bold shadow-[0_0_12px_rgba(34,211,238,0.22)] transition">
+                <svg id="profRefreshIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                <span>重新整理成績</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- MODE 1: QUEST WORKBENCH (44 PYTHON LEVELS + 11 HKDSE DEBUG QUIZZES)   -->
       <!-- ===================================================================== -->
@@ -4020,6 +4325,8 @@ if _check_file and not _err:
       if (state.mode === 'sprint' && mode !== 'sprint') { sp.paused = true; if (sp.raf) cancelAnimationFrame(sp.raf); }
       state.mode = mode;
       document.getElementById('homeContainer').classList.toggle('hidden', mode !== 'home');
+      const profCont = document.getElementById('profileContainer');
+      if (profCont) profCont.classList.toggle('hidden', mode !== 'profile');
       document.getElementById('questContainer').classList.toggle('hidden', mode !== 'quest');
       document.getElementById('textbookContainer').classList.toggle('hidden', mode !== 'textbook');
       const exCont = document.getElementById('extraPracticeContainer');
@@ -4033,10 +4340,12 @@ if _check_file and not _err:
           : 'px-3 py-1.5 rounded-[3px] text-[#9aa7b8] hover:text-white hover:bg-[#132035] transition whitespace-nowrap';
       };
       setBtn('modeHomeBtn', mode === 'home');
+      if (document.getElementById('modeProfileBtn')) setBtn('modeProfileBtn', mode === 'profile');
       setBtn('modeQuestBtn', mode === 'quest');
       setBtn('modeTextbookBtn', mode === 'textbook');
       if (document.getElementById('modeExtraBtn')) setBtn('modeExtraBtn', mode === 'extra');
       if (mode === 'home') { renderHomeRoadmap(); if (window.HomeLeaderboard) window.HomeLeaderboard.refresh(false); }
+      if (mode === 'profile' && window.StudentProfileUI) { window.StudentProfileUI.load(false); }
       if (mode === 'textbook') { renderTextbookList(); loadTextbookExample(tbState.activeId); applyTbSidebarLayout(false); }
       if (mode === 'extra' && typeof renderPracticeList === 'function') { renderPracticeList(); if (practiceState.activeId) loadPracticeQuestion(practiceState.activeId); applyExtraSidebarLayout(false); }
       renderSidebars();
@@ -6898,7 +7207,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
     function hexBadgeSvg(rank) {
       const cfg = RANK_CONFIG[rank] || RANK_CONFIG[5];
       return `
-        <svg class="w-9 h-9 shrink-0" viewBox="0 0 36 36" aria-hidden="true">
+        <svg class="w-7 h-7 shrink-0" viewBox="0 0 36 36" aria-hidden="true">
           <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="${cfg.hexFill}" stroke="${cfg.hexStroke}" stroke-width="1.6"/>
           <g transform="translate(6,6)">${cfg.icon}</g>
         </svg>
@@ -6920,7 +7229,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           return `
             <div class="cyber-hud-row ${rank === 1 ? 'is-rank-1' : ''}">
               <span class="cyber-hud-bracket" style="background:${cfg.color};box-shadow:0 0 10px ${cfg.color}88;"></span>
-              <span class="font-mono-code text-lg sm:text-xl font-bold w-5 text-center shrink-0 leading-none" style="color:${cfg.color};text-shadow:0 0 10px ${cfg.color}55;">${rank}</span>
+              <span class="font-mono-code text-base font-bold w-4 text-center shrink-0 leading-none" style="color:${cfg.color};text-shadow:0 0 10px ${cfg.color}55;">${rank}</span>
               ${hexBadgeSvg(rank)}
               <span class="font-display text-sm sm:text-[15px] font-bold text-[#f1f5f9] tracking-wide truncate flex-1 min-w-0">${esc(item.name)}</span>
               <span class="font-mono-code text-xs sm:text-sm font-bold tabular-nums whitespace-nowrap shrink-0 ${cfg.scoreCls}">${esc(item.score)}</span>
@@ -7206,6 +7515,215 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
     }
 
     window.CourseMapUI = { render: renderCourseMap, syncCards: syncCharacterCards };
+  })();
+  </script>
+
+
+  <script>
+  (function () {
+    'use strict';
+
+    let profBusy = false;
+    let selectedTargetEmail = '';
+
+    function clampPct(v) {
+      if (v === null || v === undefined || isNaN(Number(v))) return 0;
+      return Math.max(0, Math.min(100, Number(v)));
+    }
+
+    function setScoreDisplay(valId, barId, miniBarId, miniPctId, val) {
+      const hasVal = val !== null && val !== undefined && !isNaN(Number(val));
+      const pct = hasVal ? clampPct(val) : 0;
+      const vEl = document.getElementById(valId);
+      const bEl = document.getElementById(barId);
+      const mbEl = document.getElementById(miniBarId);
+      const mpEl = document.getElementById(miniPctId);
+      if (vEl) vEl.textContent = hasVal ? String(val) : '--';
+      if (bEl) bEl.style.width = `${pct}%`;
+      if (mbEl) mbEl.style.width = `${pct}%`;
+      if (mpEl) mpEl.textContent = hasVal ? `${Math.round(pct)}%` : '--%';
+      return pct;
+    }
+
+    function updateRadar(pTop, pRight, pBottom, pLeft) {
+      const cx = 100, cy = 90, maxR = 66;
+      const topY = cy - (maxR * pTop) / 100;
+      const rightX = cx + (maxR * pRight) / 100;
+      const botY = cy + (maxR * pBottom) / 100;
+      const leftX = cx - (maxR * pLeft) / 100;
+      const poly = document.getElementById('profRadarPoly');
+      if (poly) poly.setAttribute('points', `${cx},${topY} ${rightX},${cy} ${cx},${botY} ${leftX},${cy}`);
+      const dt = document.getElementById('profDotTop'); if (dt) dt.setAttribute('cy', String(topY));
+      const dr = document.getElementById('profDotRight'); if (dr) dr.setAttribute('cx', String(rightX));
+      const db = document.getElementById('profDotBottom'); if (db) db.setAttribute('cy', String(botY));
+      const dl = document.getElementById('profDotLeft'); if (dl) dl.setAttribute('cx', String(leftX));
+    }
+
+    function renderProfile(p) {
+      const idLine = document.getElementById('profIdentityLine');
+      if (idLine) {
+        const parts = [];
+        if (p.cls) parts.push(p.cls);
+        if (p.no) parts.push(`${p.no} 號`);
+        if (p.name) parts.push(p.name);
+        idLine.textContent = parts.length ? parts.join(' · ') : '已登入同學';
+      }
+
+      const xpEl = document.getElementById('profTotalXp');
+      if (xpEl) xpEl.textContent = `${Number(p.xp || 0).toLocaleString()} XP`;
+
+      const rkTitle = document.getElementById('profRankTitle');
+      const homeRank = document.getElementById('homeRankBadge');
+      if (rkTitle && homeRank) rkTitle.textContent = homeRank.textContent || 'Python 新手';
+      const rkBar = document.getElementById('profRankBar');
+      if (rkBar) rkBar.style.width = `${Math.min(100, Math.max(8, Math.round((Number(p.xp || 0) / 3000) * 100)))}%`;
+
+      // 3-module progress bars
+      const qTot = Number(p.questTotal || 138), qDone = Number(p.questDone || 0);
+      const tTot = Number(p.tbTotal || 95), tDone = Number(p.tbDone || 0);
+      const prTot = Number(p.prTotal || 521), prDone = Number(p.prDone || 0);
+      const setMod = (statId, barId, d, tot) => {
+        const s = document.getElementById(statId), b = document.getElementById(barId);
+        if (s) s.textContent = `${d} / ${tot}`;
+        if (b) b.style.width = `${tot > 0 ? Math.min(100, Math.round((d / tot) * 100)) : 0}%`;
+      };
+      setMod('profQuestStat', 'profQuestBar', qDone, qTot);
+      setMod('profTbStat', 'profTbBar', tDone, tTot);
+      setMod('profPrStat', 'profPrBar', prDone, prTot);
+
+      // A2 Hero Score
+      const gr = p.grades || {};
+      const hasA2 = gr.a2Score !== null && gr.a2Score !== undefined && !isNaN(Number(gr.a2Score));
+      const a2El = document.getElementById('profA2Score');
+      const a2Bar = document.getElementById('profA2Bar');
+      const a2Badge = document.getElementById('profA2GradeBadge');
+      if (a2El) a2El.textContent = hasA2 ? String(gr.a2Score) : '--';
+      if (a2Bar) a2Bar.style.width = `${hasA2 ? clampPct(gr.a2Score) : 0}%`;
+      if (a2Badge) {
+        if (!hasA2) a2Badge.textContent = '尚未公佈';
+        else if (gr.a2Score >= 85) a2Badge.textContent = '★ 優秀 ★';
+        else if (gr.a2Score >= 70) a2Badge.textContent = '★ 良好 ★';
+        else if (gr.a2Score >= 50) a2Badge.textContent = '合格';
+        else a2Badge.textContent = '繼續努力';
+      }
+
+      // 4 Sub-Scores + Radar
+      const pText = setScoreDisplay('profTextScore', 'profTextBar', 'profMiniTextBar', 'profMiniTextPct', gr.textScore);
+      const pCode = setScoreDisplay('profCodeScore', 'profCodeBar', 'profMiniCodeBar', 'profMiniCodePct', gr.codeScore);
+      const pHw = setScoreDisplay('profHwScore', 'profHwBar', 'profMiniHwBar', 'profMiniHwPct', gr.hwScore);
+      const pTest = setScoreDisplay('profTestScore', 'profTestBar', 'profMiniTestBar', 'profMiniTestPct', gr.testScore);
+      updateRadar(pText, pCode, pHw, pTest);
+
+      // Feedback & UpdatedAt
+      const fbEl = document.getElementById('profFeedbackText');
+      if (fbEl) {
+        if (gr.feedback) fbEl.textContent = gr.feedback;
+        else if (p.hasGrades) fbEl.textContent = '老師暫未填寫個別評語，請繼續保持良好的編程習慣！';
+        else fbEl.textContent = '老師尚未於「個人成績」工作表輸入你的最新分數，請稍後再按「重新整理成績」。';
+      }
+      const uEl = document.getElementById('profUpdatedAt');
+      if (uEl) uEl.textContent = gr.updatedAt || '即時同步';
+    }
+
+    async function loadProfile(force = false) {
+      if (profBusy) return;
+      const notice = document.getElementById('profAuthNotice');
+      const noticeText = document.getElementById('profAuthNoticeText');
+      const teacherBar = document.getElementById('profTeacherBar');
+      const sel = document.getElementById('profTeacherStudentSelect');
+      const icon = document.getElementById('profRefreshIcon');
+
+      const idToken = (typeof getTeacherIdToken === 'function' ? getTeacherIdToken() : '')
+        || (typeof state !== 'undefined' && state && state.student && state.student.idToken) || '';
+
+      if (!idToken) {
+        if (notice && noticeText) {
+          noticeText.textContent = '請先按右上角以學校 Google 帳戶登入，即可安全檢視你的個人成績檔案。';
+          notice.classList.remove('hidden');
+        }
+        return;
+      }
+      if (notice) notice.classList.add('hidden');
+
+      profBusy = true;
+      if (icon) icon.classList.add('animate-spin');
+      try {
+        const payload = { action: 'getStudentProfile', idToken };
+        if (selectedTargetEmail) payload.targetEmail = selectedTargetEmail;
+        const res = typeof callCloudGrader === 'function' ? await callCloudGrader(payload) : null;
+
+        if (!res || !res.ok) {
+          if (notice && noticeText) {
+            noticeText.textContent = (res && res.message) || '未能讀取個人檔案，請確認已部署最新版 Apps Script 或重新登入。';
+            notice.classList.remove('hidden');
+          }
+          return;
+        }
+
+        if (res.isTeacher && teacherBar && sel) {
+          teacherBar.classList.remove('hidden');
+          if (Array.isArray(res.studentList) && sel.options.length <= 1) {
+            res.studentList.forEach((st) => {
+              const opt = document.createElement('option');
+              opt.value = st.email;
+              opt.textContent = st.label;
+              sel.appendChild(opt);
+            });
+          }
+        } else if (teacherBar) {
+          teacherBar.classList.add('hidden');
+        }
+
+        if (res.profile) renderProfile(res.profile);
+      } catch (e) {
+        if (notice && noticeText) {
+          noticeText.textContent = '讀取個人成績時發生連線錯誤，請按「重新整理成績」重試。';
+          notice.classList.remove('hidden');
+        }
+      } finally {
+        profBusy = false;
+        if (icon) icon.classList.remove('animate-spin');
+      }
+    }
+
+    function initProfileUI() {
+      const navBtn = document.getElementById('modeProfileBtn');
+      if (navBtn && !navBtn.dataset.profBound) {
+        navBtn.dataset.profBound = '1';
+        navBtn.addEventListener('click', () => {
+          if (typeof switchMode === 'function') switchMode('profile');
+        });
+      }
+      const refBtn = document.getElementById('profRefreshBtn');
+      if (refBtn && !refBtn.dataset.profBound) {
+        refBtn.dataset.profBound = '1';
+        refBtn.addEventListener('click', () => loadProfile(true));
+      }
+      const reloginBtn = document.getElementById('profReloginBtn');
+      if (reloginBtn && !reloginBtn.dataset.profBound) {
+        reloginBtn.dataset.profBound = '1';
+        reloginBtn.addEventListener('click', () => {
+          const profBtn = document.getElementById('studentProfileBtn');
+          if (profBtn) profBtn.click();
+        });
+      }
+      const sel = document.getElementById('profTeacherStudentSelect');
+      if (sel && !sel.dataset.profBound) {
+        sel.dataset.profBound = '1';
+        sel.addEventListener('change', () => {
+          selectedTargetEmail = sel.value || '';
+          loadProfile(true);
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProfileUI);
+    } else {
+      initProfileUI();
+    }
+
+    window.StudentProfileUI = { load: loadProfile };
   })();
   </script>
 
