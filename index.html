@@ -809,7 +809,7 @@
                     </svg>
                   </div>
                   <div>
-                    <div class="font-display text-xs sm:text-sm font-bold text-[#fde68a] tracking-wide">平時分 (A2)</div>
+                    <div class="font-display text-xs sm:text-sm font-bold text-[#fde68a] tracking-wide">平時分</div>
                     <div class="flex items-baseline gap-1.5 mt-0.5">
                       <span id="profA2Score" class="font-mono-code text-3xl sm:text-4xl font-black italic text-[#facc15] tabular-nums leading-none" style="text-shadow:0 0 18px rgba(250,204,21,0.55);">--</span>
                       <span class="font-mono-code text-sm sm:text-base font-bold text-[#fde68a]/80">/ 100</span>
@@ -869,17 +869,14 @@
             </div>
           </div>
 
-          <!-- 編程題總分 (With 3-Tab Breakdown Inline) -->
+          <!-- 編程題總分 (4 Sub-Items Inline, Weights Hidden Server-Side) -->
           <div class="prof-sub-card border border-[#10b981]/45 px-3.5 py-3 space-y-2 shadow-[0_0_14px_rgba(16,185,129,0.08)]">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2.5">
                 <span class="w-8 h-8 rounded bg-[#10b981]/12 border border-[#10b981]/40 text-[#34d399] flex items-center justify-center shrink-0">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/><polyline points="9 9 6 11.5 9 14"/><polyline points="15 9 18 11.5 15 14"/></svg>
                 </span>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-[#cbd5e1]">編程題總分</span>
-                  <span id="profCodeAutoTag" class="px-1.5 py-0.5 rounded bg-[#10b981]/15 border border-[#10b981]/40 text-[#34d399] font-mono-code text-[9px] font-bold whitespace-nowrap">3分頁自動</span>
-                </div>
+                <div class="text-xs font-bold text-[#cbd5e1]">編程題總分</div>
               </div>
               <div class="flex items-baseline gap-1">
                 <span id="profCodeScore" class="font-mono-code text-2xl font-bold italic text-white tabular-nums leading-none">--</span>
@@ -889,18 +886,22 @@
             <div class="h-1.5 w-full rounded-full bg-[#071a15] overflow-hidden">
               <div id="profCodeBar" class="h-full rounded-full bg-gradient-to-r from-[#059669] to-[#34d399] transition-all duration-500" style="width:0%"></div>
             </div>
-            <!-- 3-Tab Breakdown Details -->
-            <div class="grid grid-cols-3 gap-2 pt-1 border-t border-[#10b981]/20 font-mono-code text-[10px]">
+            <!-- 4 Breakdown Details (No Weights Revealed) -->
+            <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 pt-1 border-t border-[#10b981]/20 font-mono-code text-[10px]">
               <div class="space-y-0.5">
-                <div class="flex items-center justify-between text-[#94a3b8]"><span>計分練習</span><span id="profQuestStat" class="font-bold text-[#38bdf8] tabular-nums">0/138</span></div>
+                <div class="flex items-center justify-between text-[#94a3b8]"><span>計分練習</span><span id="profQuestStat" class="font-bold text-[#38bdf8] tabular-nums">0 / 138</span></div>
                 <div class="h-1 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profQuestBar" class="h-full bg-[#38bdf8] transition-all duration-300" style="width:0%"></div></div>
               </div>
               <div class="space-y-0.5">
-                <div class="flex items-center justify-between text-[#94a3b8]"><span>課本例題</span><span id="profTbStat" class="font-bold text-[#34d399] tabular-nums">0/95</span></div>
+                <div class="flex items-center justify-between text-[#94a3b8]"><span>紙本功課</span><span id="profPaperHwStat" class="font-bold text-[#fbbf24] tabular-nums">-- / 100</span></div>
+                <div class="h-1 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profPaperHwBar" class="h-full bg-[#fbbf24] transition-all duration-300" style="width:0%"></div></div>
+              </div>
+              <div class="space-y-0.5">
+                <div class="flex items-center justify-between text-[#94a3b8]"><span>課本例題</span><span id="profTbStat" class="font-bold text-[#34d399] tabular-nums">0 / 95</span></div>
                 <div class="h-1 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profTbBar" class="h-full bg-[#10b981] transition-all duration-300" style="width:0%"></div></div>
               </div>
               <div class="space-y-0.5">
-                <div class="flex items-center justify-between text-[#94a3b8]"><span>額外操練</span><span id="profPrStat" class="font-bold text-[#c084fc] tabular-nums">0/521</span></div>
+                <div class="flex items-center justify-between text-[#94a3b8]"><span>額外操練</span><span id="profPrStat" class="font-bold text-[#c084fc] tabular-nums">0 / 521</span></div>
                 <div class="h-1 w-full rounded-full bg-[#081020] overflow-hidden"><div id="profPrBar" class="h-full bg-[#c084fc] transition-all duration-300" style="width:0%"></div></div>
               </div>
             </div>
@@ -7540,26 +7541,34 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       const a2Badge = document.getElementById('profA2GradeBadge');
       if (a2El) a2El.textContent = hasA2 ? String(gr.a2Score) : '--';
       if (a2Bar) a2Bar.style.width = `${hasA2 ? clampPct(gr.a2Score) : 0}%`;
+      function getA2TierInfo(score) {
+        const s = Number(score);
+        if (s >= 95) return { badge: '★ 頂尖表現 ★', comment: '非常出色，實力穩紮穩打，繼續保持！' };
+        if (s >= 90) return { badge: '★ 極佳 ★', comment: '表現極佳，距離滿分只差一步，繼續加油！' };
+        if (s >= 85) return { badge: '★ 優秀 ★', comment: '表現優秀，基礎好穩，再推高多小小就上到 90+！' };
+        if (s >= 80) return { badge: '★ 表現優良 ★', comment: '做得好，成績穩步上揚，保持呢個節奏！' };
+        if (s >= 75) return { badge: '良好', comment: '表現良好，再多操練下弱項好快就會突破 80 分！' };
+        if (s >= 70) return { badge: '穩健進步', comment: '表現穩陣，基本功有掌握，繼續多做練習會更進一步！' };
+        if (s >= 65) return { badge: '漸入佳境', comment: '開始上手啦，再鞏固多小小就上到 70+，加油！' };
+        if (s >= 60) return { badge: '不錯', comment: '表現不錯，已經跨過 60 分門檻，繼續保持努力！' };
+        if (s >= 50) return { badge: '有潛力', comment: '已經合格啦，多溫習返唔熟嘅部分，下次一定會進步！' };
+        return { badge: '繼續加油', comment: '唔好氣餒，由基本題目一步步做起，有唔明隨時問老師！' };
+      }
+      const tierInfo = hasA2 ? getA2TierInfo(gr.a2Score) : null;
       if (a2Badge) {
-        if (!hasA2) a2Badge.textContent = '尚未公佈';
-        else if (gr.a2Score >= 85) a2Badge.textContent = '★ 優秀 ★';
-        else if (gr.a2Score >= 70) a2Badge.textContent = '★ 良好 ★';
-        else if (gr.a2Score >= 50) a2Badge.textContent = '合格';
-        else a2Badge.textContent = '繼續努力';
+        a2Badge.textContent = tierInfo ? tierInfo.badge : '尚未公佈';
       }
 
-      // 4 Sub-Scores + Radar (編程題總分若未手動填寫，自動綜合 3 個分頁計算滿分 100)
-      const qD = Number(p.questDone || 0), tbD = Number(p.tbDone || 0), prD = Number(p.prDone || 0);
-      const qT = Number(p.questTotal || 138), tbT = Number(p.tbTotal || 95), prT = Number(p.prTotal || 521);
-      const allT = qT + tbT + prT;
-      const autoCode = allT > 0 ? Math.round(((qD + tbD + prD) / allT) * 1000) / 10 : 0;
-      const isAutoCode = (gr.codeScore === null || gr.codeScore === undefined || gr.codeScoreAuto === true);
-      const effectiveCodeScore = (gr.codeScore !== null && gr.codeScore !== undefined) ? gr.codeScore : autoCode;
-      const autoTag = document.getElementById('profCodeAutoTag');
-      if (autoTag) autoTag.classList.toggle('hidden', !isAutoCode);
+      // 紙本功課細項（編程題卡內顯示，不公開任何佔比權重）
+      const hasPaper = gr.paperHwScore !== null && gr.paperHwScore !== undefined && !isNaN(Number(gr.paperHwScore));
+      const pPaperStat = document.getElementById('profPaperHwStat');
+      const pPaperBar = document.getElementById('profPaperHwBar');
+      if (pPaperStat) pPaperStat.textContent = hasPaper ? `${gr.paperHwScore} / 100` : '-- / 100';
+      if (pPaperBar) pPaperBar.style.width = `${hasPaper ? clampPct(gr.paperHwScore) : 0}%`;
 
+      // 4 Sub-Scores + Radar（編程題總分由後端加密加權計算後回傳）
       const pText = setScoreDisplay('profTextScore', 'profTextBar', null, 'profRadarPctTop', gr.textScore);
-      const pCode = setScoreDisplay('profCodeScore', 'profCodeBar', null, 'profRadarPctRight', effectiveCodeScore);
+      const pCode = setScoreDisplay('profCodeScore', 'profCodeBar', null, 'profRadarPctRight', gr.codeScore);
       const pHw = setScoreDisplay('profHwScore', 'profHwBar', null, 'profRadarPctBottom', gr.hwScore);
       const pTest = setScoreDisplay('profTestScore', 'profTestBar', null, 'profRadarPctLeft', gr.testScore);
       updateRadar(pText, pCode, pHw, pTest);
@@ -7568,6 +7577,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       const fbEl = document.getElementById('profFeedbackText');
       if (fbEl) {
         if (gr.feedback) fbEl.textContent = gr.feedback;
+        else if (tierInfo) fbEl.textContent = tierInfo.comment;
         else if (p.hasGrades) fbEl.textContent = '繼續保持！';
         else fbEl.textContent = '老師尚未於「個人成績」工作表輸入你的最新分數，請稍後再按「重新整理成績」。';
       }
