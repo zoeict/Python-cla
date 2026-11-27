@@ -335,31 +335,69 @@
       0% { transform: translateX(-120%); }
       100% { transform: translateX(220%); }
     }
+    @keyframes syncWaveBar {
+      0%, 100% { transform: scaleY(0.38); opacity: 0.55; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+    @keyframes syncPulseRing {
+      0% { transform: scale(0.85); opacity: 0.85; }
+      70% { transform: scale(1.65); opacity: 0; }
+      100% { transform: scale(1.65); opacity: 0; }
+    }
     .home-sync-pill {
       position: relative;
       overflow: hidden;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      padding: 12px 26px;
+      gap: 10px;
+      padding: 8px 20px;
       border-radius: 999px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      backdrop-filter: blur(20px) saturate(145%);
+      -webkit-backdrop-filter: blur(20px) saturate(145%);
+      transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .home-sync-pill::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(120deg, rgba(56, 189, 248, 0.65), rgba(192, 132, 252, 0.45), rgba(34, 211, 238, 0.7));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.85;
     }
     .home-sync-pill::after {
       content: '';
       position: absolute;
       inset: 0;
-      width: 45%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+      width: 42%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
       transform: translateX(-120%);
       pointer-events: none;
     }
     .home-sync-pill.is-syncing::after {
-      animation: syncPillSweep 1.9s ease-in-out infinite;
+      animation: syncPillSweep 1.75s ease-in-out infinite;
     }
+    .sync-eq {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      height: 14px;
+    }
+    .sync-eq span {
+      width: 2.5px;
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(180deg, #38bdf8, #c084fc);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.75);
+      animation: syncWaveBar 0.95s ease-in-out infinite;
+    }
+    .sync-eq span:nth-child(2) { animation-delay: 0.16s; }
+    .sync-eq span:nth-child(3) { animation-delay: 0.32s; }
   
     /* === Cyber HUD Chamfered Dual Leaderboard === */
     .cyber-hud-card {
@@ -415,27 +453,92 @@
     }
 
   
-    /* === Student Profile Neon Cyber Dashboard === */
+    /* === Student Profile Translucent Aurora Glass HUD === */
+    #profileContainer {
+      background:
+        radial-gradient(circle at 14% 16%, rgba(34, 211, 238, 0.14) 0%, transparent 42%),
+        radial-gradient(circle at 86% 14%, rgba(250, 204, 21, 0.11) 0%, transparent 38%),
+        radial-gradient(circle at 76% 84%, rgba(192, 132, 252, 0.13) 0%, transparent 44%),
+        radial-gradient(circle at 22% 86%, rgba(16, 185, 129, 0.10) 0%, transparent 40%),
+        #050914;
+    }
     .prof-hud-box {
       position: relative;
-      background: linear-gradient(180deg, rgba(10, 19, 38, 0.92) 0%, rgba(5, 10, 22, 0.97) 100%);
-      border: 1px solid rgba(34, 211, 238, 0.45);
-      clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
-      box-shadow: inset 0 0 24px rgba(34, 211, 238, 0.08);
+      border-radius: 16px;
+      background: linear-gradient(155deg, rgba(13, 25, 48, 0.62) 0%, rgba(7, 14, 28, 0.54) 100%);
+      backdrop-filter: blur(18px) saturate(145%);
+      -webkit-backdrop-filter: blur(18px) saturate(145%);
+      border: 1px solid rgba(56, 189, 248, 0.34);
+      box-shadow:
+        0 10px 34px -10px rgba(2, 6, 23, 0.78),
+        0 0 22px -4px rgba(34, 211, 238, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 0 24px rgba(34, 211, 238, 0.06);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .prof-hud-box::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.72), rgba(192, 132, 252, 0.36), rgba(56, 189, 248, 0.18), rgba(34, 211, 238, 0.62));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.78;
+    }
+    .prof-hud-box:hover {
+      box-shadow:
+        0 14px 38px -10px rgba(2, 6, 23, 0.85),
+        0 0 28px -2px rgba(34, 211, 238, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
     .prof-a2-banner {
       position: relative;
-      background: linear-gradient(90deg, rgba(45, 31, 6, 0.95) 0%, rgba(20, 16, 10, 0.96) 55%, rgba(38, 28, 7, 0.94) 100%);
-      border: 1.5px solid rgba(250, 204, 21, 0.72);
-      clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px);
-      box-shadow: 0 0 28px rgba(250, 204, 21, 0.14), inset 0 0 26px rgba(250, 204, 21, 0.08);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(56, 38, 8, 0.62) 0%, rgba(22, 16, 10, 0.56) 52%, rgba(44, 30, 8, 0.60) 100%);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      border: 1px solid rgba(250, 204, 21, 0.55);
+      box-shadow:
+        0 12px 34px -10px rgba(2, 6, 23, 0.82),
+        0 0 30px -4px rgba(250, 204, 21, 0.28),
+        inset 0 1px 0 rgba(254, 240, 138, 0.28),
+        inset 0 0 28px rgba(250, 204, 21, 0.09);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .prof-a2-banner::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: linear-gradient(125deg, rgba(254, 240, 138, 0.85), rgba(251, 146, 60, 0.55), rgba(250, 204, 21, 0.25), rgba(254, 240, 138, 0.78));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
     }
     .prof-sub-card {
       position: relative;
-      background: linear-gradient(180deg, rgba(9, 17, 34, 0.94) 0%, rgba(5, 10, 21, 0.98) 100%);
-      clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(13, 24, 46, 0.58) 0%, rgba(7, 13, 26, 0.50) 100%);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      box-shadow:
+        0 8px 26px -10px rgba(2, 6, 23, 0.75),
+        inset 0 1px 0 rgba(255, 255, 255, 0.13);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
-
+    .prof-sub-card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 32px -8px rgba(2, 6, 23, 0.85),
+        0 0 24px -4px rgba(56, 189, 248, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body class="antialiased selection:bg-[#38bdf8] selection:text-[#04131e]">
@@ -602,7 +705,7 @@
               <div id="homeSyncBanner" class="hidden w-full flex justify-center py-0.5">
                 <div id="homeSyncPill" class="home-sync-pill is-syncing">
                   <span id="homeSyncDot" class="inline-block w-4 h-4 rounded-full border-2 border-[#fbbf24]/25 border-t-[#fbbf24] animate-spin shrink-0"></span>
-                  <span id="homeSyncText" class="text-sm sm:text-[15px] font-bold tracking-wider">同步中，請稍候</span>
+                  <span id="homeSyncText" class="font-mono-code text-xs sm:text-[13px] font-bold tracking-wider">雲端同步中...</span>
                 </div>
               </div>
             </div>
@@ -830,7 +933,7 @@
                   <span class="text-[#22d3ee]">💬</span><span>老師評語</span>
                 </div>
                 <div class="rounded bg-[#071124]/90 border border-[#22d3ee]/30 px-3 py-2.5 min-h-[72px] flex items-start gap-2.5">
-                  <span class="text-[#facc15] text-base leading-none mt-0.5 shrink-0">★</span>
+                  <span class="text-base leading-none mt-0.5 shrink-0">💡</span>
                   <div id="profFeedbackText" class="text-xs sm:text-sm text-[#e2e8f0] leading-relaxed whitespace-pre-line">載入個人成績與老師評語中...</div>
                 </div>
               </div>
@@ -1933,37 +2036,48 @@
       if (!msg) { wrap.classList.add('hidden'); return; }
       const styleMap = {
         info: {
-          bg: 'linear-gradient(135deg, rgba(36, 24, 8, 0.92) 0%, rgba(22, 16, 8, 0.94) 100%)',
-          border: '1px solid rgba(251, 191, 36, 0.72)',
-          color: '#fef3c7',
-          shadow: '0 0 0 1px rgba(251, 191, 36, 0.16), 0 12px 32px -6px rgba(245, 158, 11, 0.34)',
-          dotCls: 'inline-block w-4 h-4 rounded-full border-2 border-[#fbbf24]/25 border-t-[#fbbf24] animate-spin shrink-0',
+          bg: 'linear-gradient(135deg, rgba(10, 24, 48, 0.78) 0%, rgba(16, 16, 42, 0.82) 100%)',
+          border: '1px solid rgba(56, 189, 248, 0.45)',
+          color: '#e0f2fe',
+          shadow: '0 0 22px rgba(56, 189, 248, 0.24), inset 0 1px 0 rgba(255,255,255,0.14)',
+          dotHtml: '<span class="sync-eq"><span></span><span></span><span></span></span>',
           syncing: true
         },
         ok: {
-          bg: 'linear-gradient(135deg, rgba(7, 32, 24, 0.92) 0%, rgba(6, 22, 18, 0.94) 100%)',
-          border: '1px solid rgba(52, 211, 153, 0.68)',
+          bg: 'linear-gradient(135deg, rgba(6, 32, 26, 0.78) 0%, rgba(8, 24, 28, 0.82) 100%)',
+          border: '1px solid rgba(52, 211, 153, 0.55)',
           color: '#d1fae5',
-          shadow: '0 0 0 1px rgba(52, 211, 153, 0.16), 0 12px 28px -6px rgba(16, 185, 129, 0.30)',
-          dotCls: 'inline-block w-2.5 h-2.5 rounded-full bg-[#34d399] shadow-[0_0_10px_#34d399] shrink-0',
+          shadow: '0 0 20px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255,255,255,0.14)',
+          dotHtml: '<span class="relative inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#10b981]/25 text-[#34d399] text-[11px] font-bold">✓</span>',
           syncing: false
         },
         warn: {
-          bg: 'linear-gradient(135deg, rgba(40, 10, 18, 0.92) 0%, rgba(24, 8, 14, 0.94) 100%)',
-          border: '1px solid rgba(251, 113, 133, 0.72)',
-          color: '#ffe4e6',
-          shadow: '0 0 0 1px rgba(251, 113, 133, 0.16), 0 12px 28px -6px rgba(244, 63, 94, 0.32)',
-          dotCls: 'inline-block w-2.5 h-2.5 rounded-full bg-[#fb7185] animate-pulse shrink-0',
+          bg: 'linear-gradient(135deg, rgba(38, 24, 8, 0.8) 0%, rgba(24, 16, 8, 0.84) 100%)',
+          border: '1px solid rgba(251, 191, 36, 0.55)',
+          color: '#fef3c7',
+          shadow: '0 0 20px rgba(245, 158, 11, 0.24), inset 0 1px 0 rgba(255,255,255,0.12)',
+          dotHtml: '<span class="w-2.5 h-2.5 rounded-full bg-[#fbbf24] shadow-[0_0_8px_#fbbf24]"></span>',
+          syncing: false
+        },
+        err: {
+          bg: 'linear-gradient(135deg, rgba(44, 12, 20, 0.82) 0%, rgba(28, 10, 18, 0.86) 100%)',
+          border: '1px solid rgba(248, 113, 113, 0.58)',
+          color: '#fee2e2',
+          shadow: '0 0 20px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255,255,255,0.12)',
+          dotHtml: '<span class="w-2.5 h-2.5 rounded-full bg-[#f87171] shadow-[0_0_8px_#f87171]"></span>',
           syncing: false
         }
       };
-      const cfg = styleMap[tone] || styleMap.info;
-      pill.style.background = cfg.bg;
-      pill.style.border = cfg.border;
-      pill.style.color = cfg.color;
-      pill.style.boxShadow = cfg.shadow;
-      pill.classList.toggle('is-syncing', Boolean(cfg.syncing));
-      if (dot) dot.className = cfg.dotCls;
+      const st = styleMap[tone] || styleMap.info;
+      pill.style.background = st.bg;
+      pill.style.border = st.border;
+      pill.style.color = st.color;
+      pill.style.boxShadow = st.shadow;
+      pill.classList.toggle('is-syncing', Boolean(st.syncing));
+      if (dot) {
+        dot.className = 'inline-flex items-center justify-center shrink-0';
+        dot.innerHTML = st.dotHtml;
+      }
       txt.textContent = msg;
       wrap.classList.remove('hidden');
       if (autoHideMs > 0) {
@@ -1971,54 +2085,6 @@
       }
     }
 
-    async function loadCloudProgressByEmail(email, opts = {}) {
-      const url = getGasUrl();
-      if (!url || !email) return null;
-      const showBanner = Boolean(opts.showBanner);
-      if (showBanner) setCloudSyncBanner('同步中，請稍候', 'info');
-
-      const parseResp = (data) => {
-        if (data && (data.status === 'success' || data.status === 'ok' || data.ok === true)) {
-          if (data.found && data.progress) {
-            return { ...data.progress, _found: true };
-          }
-          if (data.found === false) {
-            return { _found: false, xp: 0, penalty: 0, completed: {}, tbDone: {}, latestCode: {} };
-          }
-        }
-        return null;
-      };
-
-      // 1) 優先使用已驗證 Google ID Token 透過 POST 讀取
-      const idToken = getTeacherIdToken();
-      if (idToken) {
-        try {
-          const postData = await callCloudGrader({
-            action: 'load_progress',
-            idToken,
-            targetEmail: email
-          });
-          const parsed = parseResp(postData);
-          if (parsed) return parsed;
-        } catch (e) {}
-      }
-
-      // 2) 後備：透過 GAS doGet (?action=getProgress&email=...) 雙向拉取（適用於重新開啟瀏覽器或憑證過期時）
-      try {
-        const qs = `action=getProgress&email=${encodeURIComponent(email)}&t=${Date.now()}`;
-        const resp = await fetch(`${url}?${qs}`, { method: 'GET', cache: 'no-store' });
-        if (resp.ok) {
-          const getData = await resp.json();
-          const parsed = parseResp(getData);
-          if (parsed) return parsed;
-        }
-      } catch (e) {}
-
-      if (showBanner) setCloudSyncBanner('⚠ 未能連線 Google Sheet，請檢查網絡（所有進度一律儲存於雲端）', 'warn', 5500);
-      return null;
-    }
-
-    // 雲端與本地進度聯集（Union）合併：永不覆蓋離線已完成題目、取最高分、還原最新程式碼
     function mergeCloudProgress(cloud, opts = {}) {
       if (!cloud) return { mergedLevels: Object.keys(state.completed).length, mergedTb: 0 };
       const validLevelIds = new Set((typeof LEVELS !== 'undefined' ? LEVELS : []).map((l) => l.id));
@@ -7541,18 +7607,156 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       const a2Badge = document.getElementById('profA2GradeBadge');
       if (a2El) a2El.textContent = hasA2 ? String(gr.a2Score) : '--';
       if (a2Bar) a2Bar.style.width = `${hasA2 ? clampPct(gr.a2Score) : 0}%`;
+      const A2_TIER_POOLS = [
+        {
+          key: '95_100', min: 95, badge: '👑 頂尖表現',
+          comments: [
+            '表現非常出色，實力穩紮穩打，繼續保持！',
+            '高水準發揮，每個範疇都處理得乾淨俐落，讚！',
+            '基本功同實戰力都好強，已經係班入面嘅模範水準！',
+            '幾乎無可挑剔，保持呢份專注同細心，公開試一定穩陣！',
+            '實力超班，可以試下挑戰多啲進階演算法題目！',
+            '非常穩健嘅頂尖成績，繼續維持呢個好狀態！'
+          ]
+        },
+        {
+          key: '90_94', min: 90, badge: '🏆 表現極佳',
+          comments: [
+            '表現極佳，距離滿分只差一步，繼續加油！',
+            '成績相當亮眼，整體掌握度好高，保持節奏！',
+            '做得好出色，再微調返少少細節就可以衝上 95+！',
+            '無論概念定實戰都好紮實，繼續向滿分進發！',
+            '好有水準嘅發揮，睇得出你落咗唔少心機！',
+            '穩企 90 分以上好唔容易，繼續保持呢股氣勢！'
+          ]
+        },
+        {
+          key: '85_89', min: 85, badge: '🔥 表現優秀',
+          comments: [
+            '表現優秀，基礎好穩，再推高多小小就上到 90+！',
+            '成績好理想，睇得出你對課題已經相當熟手！',
+            '做得好有條理，再多執一執細微位就可以再上層樓！',
+            '整體表現相當出色，保持穩定練習好快衝破 90 分！',
+            '實力一直喺度提升，好快就會見到你企上 90+！',
+            '好穩陣嘅優秀表現，繼續保持呢份熱誠！'
+          ]
+        },
+        {
+          key: '80_84', min: 80, badge: '🚀 表現優良',
+          comments: [
+            '做得好，成績穩步上揚，保持呢個節奏！',
+            '已經穩穩企喺 80 分以上，表現令人滿意！',
+            '理解力唔錯，針對弱項再多練幾題就會衝上 85+！',
+            '進步睇得到，繼續維持穩定輸出就無問題！',
+            '整體發揮均衡，再細心少少檢查細節分數會更高！',
+            '好有潛力再進一步，保持住呢個好勢頭！'
+          ]
+        },
+        {
+          key: '75_79', min: 75, badge: '🎯 良好發揮',
+          comments: [
+            '表現良好，再多操練下弱項好快就會突破 80 分！',
+            '距離 80 分大關只差幾步，加把勁一定衝得到！',
+            '大部份重點都掌握到，多做幾題實戰就會更穩陣！',
+            '整體表現唔錯，睇返雷達圖補一補較弱嗰環就掂！',
+            '已經建立到好好嘅底子，繼續堅持好快見成果！',
+            '穩步向前緊，再多花少少時間溫習就會有大突破！'
+          ]
+        },
+        {
+          key: '70_74', min: 70, badge: '📈 穩健進步',
+          comments: [
+            '表現穩陣，基本功有掌握，繼續多做練習會更進一步！',
+            '企穩 70 分以上係好開始，一步步向上推就啱啦！',
+            '核心概念都明白，再多練多試就會越做越順手！',
+            '狀態越嚟越好，保持每星期做少少題目好快上 75+！',
+            '睇得出你有跟住進度學，繼續努力會有更大回報！',
+            '表現平穩可靠，試下針對唔熟嘅題型重點操練！'
+          ]
+        },
+        {
+          key: '65_69', min: 65, badge: '⚡ 漸入佳境',
+          comments: [
+            '開始上手啦，再鞏固多小小就上到 70+，加油！',
+            '距離 70 分只差少少，多做幾題練習好快就跨過去！',
+            '表現越嚟越有起色，繼續保持呢份投入感！',
+            '基本方向已經啱晒，再熟習下語法細節分數即刻升！',
+            '睇得出你開始掌握到竅門，千祈唔好停落嚟！',
+            '穩步進步緊，多參考返例題做法會更有信心！'
+          ]
+        },
+        {
+          key: '60_64', min: 60, badge: '👍 表現不錯',
+          comments: [
+            '表現不錯，已經跨過 60 分門檻，繼續保持努力！',
+            '做得幾好，已經打好基本功，再多練下會更上一層樓！',
+            '唔錯呀！穩住 60 分以上，下一步就向 65+ 進發！',
+            '睇得出你有努力跟進，保持信心繼續做多啲練習！',
+            '已經掌握到基礎概念，多花少少時間操練實有進步！',
+            '表現不錯，有唔明嘅位隨時問老師，好快會再升！'
+          ]
+        },
+        {
+          key: '50_59', min: 50, badge: '🌱 潛力無限',
+          comments: [
+            '已經合格啦，多溫習返唔熟嘅部分，下次一定會進步！',
+            '跨過合格線係第一步，再多做啲基礎題好快上 60+！',
+            '你有進步嘅潛力，逐個課題清返啲唔明嘅位就得！',
+            '加油！試下每日抽十幾分鐘做幾題，好快會見到分別！',
+            '基礎仲可以再鞏固下，有問題隨時舉手問老師！',
+            '已經行出好重要嘅一步，繼續堅持落去一定會越做越好！'
+          ]
+        },
+        {
+          key: '0_49', min: -1, badge: '💪 繼續加油',
+          comments: [
+            '唔好氣餒，由基本題目一步步做起，有唔明隨時問老師！',
+            '萬事起頭難，先由課本例題慢慢跟住打一次，好快會上手！',
+            '每個人起步節奏唔同，只要肯開始做就已經係進步！',
+            '唔洗急，逐課清返基本概念，老師同平台都會幫你追返上嚟！',
+            '加油呀！先揀最簡單嘅計分練習熱身，建立返信心先！',
+            '而家只係起步階段，肯多練多問，下次一定會有明顯進步！'
+          ]
+        }
+      ];
+
+      function pickNonRepeatingComment(tierKey, comments) {
+        if (!Array.isArray(comments) || !comments.length) return '繼續保持！';
+        const bagKey = `pylab_prof_bag_v1_${tierKey}`;
+        const lastKey = `pylab_prof_last_v1_${tierKey}`;
+        let bag = [];
+        let lastIdx = -1;
+        try {
+          bag = JSON.parse(localStorage.getItem(bagKey) || '[]');
+          lastIdx = Number(localStorage.getItem(lastKey) ?? -1);
+        } catch (e) {}
+        bag = Array.isArray(bag) ? bag.filter((i) => Number.isInteger(i) && i >= 0 && i < comments.length) : [];
+        if (bag.length === 0) {
+          bag = comments.map((_, i) => i);
+          for (let i = bag.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [bag[i], bag[j]] = [bag[j], bag[i]];
+          }
+          if (bag.length > 1 && bag[0] === lastIdx) {
+            const swapIdx = 1 + Math.floor(Math.random() * (bag.length - 1));
+            [bag[0], bag[swapIdx]] = [bag[swapIdx], bag[0]];
+          }
+        }
+        const chosen = bag.shift();
+        try {
+          localStorage.setItem(bagKey, JSON.stringify(bag));
+          localStorage.setItem(lastKey, String(chosen));
+        } catch (e) {}
+        return comments[chosen];
+      }
+
       function getA2TierInfo(score) {
         const s = Number(score);
-        if (s >= 95) return { badge: '★ 頂尖表現 ★', comment: '非常出色，實力穩紮穩打，繼續保持！' };
-        if (s >= 90) return { badge: '★ 極佳 ★', comment: '表現極佳，距離滿分只差一步，繼續加油！' };
-        if (s >= 85) return { badge: '★ 優秀 ★', comment: '表現優秀，基礎好穩，再推高多小小就上到 90+！' };
-        if (s >= 80) return { badge: '★ 表現優良 ★', comment: '做得好，成績穩步上揚，保持呢個節奏！' };
-        if (s >= 75) return { badge: '良好', comment: '表現良好，再多操練下弱項好快就會突破 80 分！' };
-        if (s >= 70) return { badge: '穩健進步', comment: '表現穩陣，基本功有掌握，繼續多做練習會更進一步！' };
-        if (s >= 65) return { badge: '漸入佳境', comment: '開始上手啦，再鞏固多小小就上到 70+，加油！' };
-        if (s >= 60) return { badge: '不錯', comment: '表現不錯，已經跨過 60 分門檻，繼續保持努力！' };
-        if (s >= 50) return { badge: '有潛力', comment: '已經合格啦，多溫習返唔熟嘅部分，下次一定會進步！' };
-        return { badge: '繼續加油', comment: '唔好氣餒，由基本題目一步步做起，有唔明隨時問老師！' };
+        const tier = A2_TIER_POOLS.find((t) => s >= t.min) || A2_TIER_POOLS[A2_TIER_POOLS.length - 1];
+        return {
+          badge: tier.badge,
+          comment: pickNonRepeatingComment(tier.key, tier.comments)
+        };
       }
       const tierInfo = hasA2 ? getA2TierInfo(gr.a2Score) : null;
       if (a2Badge) {
