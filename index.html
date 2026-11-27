@@ -7568,7 +7568,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       const fbEl = document.getElementById('profFeedbackText');
       if (fbEl) {
         if (gr.feedback) fbEl.textContent = gr.feedback;
-        else if (p.hasGrades) fbEl.textContent = '老師暫未填寫個別評語，請繼續保持良好的編程習慣！';
+        else if (p.hasGrades) fbEl.textContent = '繼續保持！';
         else fbEl.textContent = '老師尚未於「個人成績」工作表輸入你的最新分數，請稍後再按「重新整理成績」。';
       }
       const uEl = document.getElementById('profUpdatedAt');
