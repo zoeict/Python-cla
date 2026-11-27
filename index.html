@@ -759,9 +759,9 @@
               </div>
               <div class="min-w-0 space-y-1">
                 <div id="profIdentityLine" class="font-display text-base sm:text-lg font-bold text-white truncate">尚未登入</div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#10b981]/15 border border-[#10b981]/45 text-[#34d399] font-mono-code text-[10px] font-bold">
-                  <span id="profStatusDot" class="w-1.5 h-1.5 rounded-full bg-[#34d399] shadow-[0_0_6px_#34d399]"></span>
-                  <span id="profStatusLabel">已登入</span>
+                <div id="profStatusPill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#64748b]/15 border border-[#64748b]/45 text-[#cbd5e1] font-mono-code text-[10px] font-bold">
+                  <span id="profStatusDot" class="w-1.5 h-1.5 rounded-full bg-[#94a3b8]"></span>
+                  <span id="profStatusLabel">尚未登入</span>
                 </div>
               </div>
             </div>
@@ -2189,13 +2189,13 @@
 
     let pendingGoogleUser = null;
 
-    function updateGmailModalUI() {
+    function updateGmailModalUI(forceSignIn = false) {
       const signedBox = document.getElementById('gmailSignedInBox');
       const signInSec = document.getElementById('gmailSignInSection');
       const fallbackNote = document.getElementById('gmailFallbackNote');
       const user = pendingGoogleUser || (state.student && state.student.email ? state.student : null);
 
-      if (user && user.email && user.verifiedGoogle) {
+      if (!forceSignIn && user && user.email && user.verifiedGoogle) {
         signedBox.classList.remove('hidden');
         signInSec.classList.add('hidden');
         document.getElementById('gmailNameText').textContent = user.name || user.email;
@@ -2300,6 +2300,9 @@
       try { localStorage.setItem(LAST_PROFILE_KEY, JSON.stringify(profile)); } catch (e) {}
       stEl.classList.add('hidden');
       document.getElementById('loginModal').classList.add('hidden');
+      if (state.mode === 'profile' && typeof window.loadStudentProfile === 'function') {
+        setTimeout(() => window.loadStudentProfile(true), 120);
+      }
     }
 
     // Anti-AI Telemetry: Track Tab-Switch & Away Seconds (No fullscreen lock)
@@ -7625,25 +7628,113 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       if (uEl) uEl.textContent = gr.updatedAt || '即時同步';
     }
 
+    function setProfStatusBadge(mode) {
+      const pill = document.getElementById('profStatusPill');
+      const dot = document.getElementById('profStatusDot');
+      const label = document.getElementById('profStatusLabel');
+      if (!pill || !dot || !label) return;
+      if (mode === 'ok') {
+        pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#10b981]/15 border border-[#10b981]/45 text-[#34d399] font-mono-code text-[10px] font-bold';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#34d399] shadow-[0_0_6px_#34d399]';
+        label.textContent = '已安全驗證';
+      } else if (mode === 'expired') {
+        pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/45 text-[#fbbf24] font-mono-code text-[10px] font-bold';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#fbbf24] shadow-[0_0_6px_#fbbf24]';
+        label.textContent = '憑證已過期 · 請重新驗證';
+      } else {
+        pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#64748b]/15 border border-[#64748b]/45 text-[#cbd5e1] font-mono-code text-[10px] font-bold';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#94a3b8]';
+        label.textContent = '尚未登入';
+      }
+    }
+
+    function renderLocalProfilePreview() {
+      const st = (typeof state !== 'undefined' && state && state.student) ? state.student : null;
+      const idLine = document.getElementById('profIdentityLine');
+      if (!st || !st.email) {
+        if (idLine) idLine.textContent = '尚未登入';
+        setProfStatusBadge('guest');
+        return false;
+      }
+      if (idLine) {
+        const parts = [];
+        if (st.cls) parts.push(st.cls);
+        if (st.no) parts.push(`${st.no} 號`);
+        if (st.name) parts.push(st.name);
+        idLine.textContent = parts.length ? parts.join(' · ') : st.email;
+      }
+      const xpVal = Number((typeof state !== 'undefined' && state && state.xp) || 0);
+      const xpEl = document.getElementById('profTotalXp');
+      if (xpEl) xpEl.textContent = `${xpVal.toLocaleString()} XP`;
+      const rkTitle = document.getElementById('profRankTitle');
+      const homeRank = document.getElementById('homeRankBadge');
+      if (rkTitle && homeRank) rkTitle.textContent = homeRank.textContent || 'Python 新手';
+      const rkBar = document.getElementById('profRankBar');
+      if (rkBar) rkBar.style.width = `${Math.min(100, Math.max(8, Math.round((xpVal / 3000) * 100)))}%`;
+
+      const qDone = (typeof state !== 'undefined' && state && state.completed) ? Object.keys(state.completed).length : 0;
+      const tbDone = (typeof state !== 'undefined' && state && state.tbDone) ? Object.keys(state.tbDone).length : 0;
+      const prDone = (typeof state !== 'undefined' && state && state.practiceDone) ? Object.keys(state.practiceDone).length : 0;
+      const qTotal = (typeof LEVELS !== 'undefined' && LEVELS.length) ? LEVELS.length : 138;
+      const tbTotal = (typeof TEXTBOOK_EXAMPLES !== 'undefined' && TEXTBOOK_EXAMPLES.length) ? TEXTBOOK_EXAMPLES.length : 95;
+      const prTotal = (typeof PRACTICE_BANK !== 'undefined' && PRACTICE_BANK.length) ? PRACTICE_BANK.length : 521;
+
+      const setMini = (txtId, barId, done, total) => {
+        const t = document.getElementById(txtId);
+        const b = document.getElementById(barId);
+        if (t) t.textContent = `${done} / ${total}`;
+        if (b) b.style.width = `${total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0}%`;
+      };
+      setMini('profQuestCount', 'profQuestBar', qDone, qTotal);
+      setMini('profTbCount', 'profTbBar', tbDone, tbTotal);
+      setMini('profPrCount', 'profPrBar', prDone, prTotal);
+      return true;
+    }
+
+    function isJwtExpiredLocally(tok) {
+      if (!tok || typeof decodeJwtPayload !== 'function') return false;
+      try {
+        const info = decodeJwtPayload(tok);
+        if (info && info.exp) {
+          return (Number(info.exp) * 1000) <= (Date.now() + 15000);
+        }
+      } catch (e) {}
+      return false;
+    }
+
     async function loadProfile(force = false) {
       if (profBusy) return;
       const notice = document.getElementById('profAuthNotice');
       const noticeText = document.getElementById('profAuthNoticeText');
+      const reloginBtn = document.getElementById('profReloginBtn');
+      const fbEl = document.getElementById('profFeedbackText');
       const teacherBar = document.getElementById('profTeacherBar');
       const sel = document.getElementById('profTeacherStudentSelect');
       const icon = document.getElementById('profRefreshIcon');
 
+      const hasLocalUser = renderLocalProfilePreview();
+
       const idToken = (typeof getTeacherIdToken === 'function' ? getTeacherIdToken() : '')
         || (typeof state !== 'undefined' && state && state.student && state.student.idToken) || '';
 
-      if (!idToken) {
+      if (!idToken || isJwtExpiredLocally(idToken)) {
+        setProfStatusBadge(hasLocalUser ? 'expired' : 'guest');
+        if (reloginBtn) reloginBtn.textContent = hasLocalUser ? '重新驗證登入' : '前往登入';
         if (notice && noticeText) {
-          noticeText.textContent = '請先按右上角以學校 Google 帳戶登入，即可安全檢視你的個人成績檔案。';
+          noticeText.textContent = hasLocalUser
+            ? 'Google 安全登入憑證每 1 小時自動過期。請按右側「重新驗證登入」點選學校 Google 帳戶，即可即時顯示個人成績與老師評語。'
+            : '請先以學校 Google 帳戶登入，即可安全檢視你的個人成績檔案。';
           notice.classList.remove('hidden');
+        }
+        if (fbEl) {
+          fbEl.textContent = hasLocalUser
+            ? '為保護個人成績私隱，請按上方「重新驗證登入」刷新 Google 安全憑證後即可載入成績與老師評語。'
+            : '請先登入學校 Google 帳戶以檢視個人成績與老師評語。';
         }
         return;
       }
       if (notice) notice.classList.add('hidden');
+      if (fbEl && !selectedTargetEmail) fbEl.textContent = '載入個人成績與老師評語中...';
 
       profBusy = true;
       if (icon) icon.classList.add('animate-spin');
@@ -7653,13 +7744,24 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
         const res = typeof callCloudGrader === 'function' ? await callCloudGrader(payload) : null;
 
         if (!res || !res.ok) {
+          const isExp = Boolean(res && res.expired);
+          setProfStatusBadge(hasLocalUser ? 'expired' : 'guest');
+          if (reloginBtn) reloginBtn.textContent = hasLocalUser ? '重新驗證登入' : '前往登入';
           if (notice && noticeText) {
-            noticeText.textContent = (res && res.message) || '未能讀取個人檔案，請確認已部署最新版 Apps Script 或重新登入。';
+            noticeText.textContent = isExp
+              ? 'Google 安全登入憑證已超過 1 小時效期，請按右側「重新驗證登入」刷新憑證。'
+              : ((res && res.message) || '未能讀取個人檔案，請確認已部署最新版 Apps Script 或重新驗證登入。');
             notice.classList.remove('hidden');
+          }
+          if (fbEl) {
+            fbEl.textContent = isExp
+              ? '請按上方「重新驗證登入」刷新 Google 憑證，即可即時顯示個人成績與老師評語。'
+              : '暫時未能取得個人成績，請確認網絡或按「重新整理成績」重試。';
           }
           return;
         }
 
+        setProfStatusBadge('ok');
         if (res.isTeacher && teacherBar && sel) {
           teacherBar.classList.remove('hidden');
           if (Array.isArray(res.studentList) && sel.options.length <= 1) {
@@ -7680,6 +7782,7 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
           noticeText.textContent = '讀取個人成績時發生連線錯誤，請按「重新整理成績」重試。';
           notice.classList.remove('hidden');
         }
+        if (fbEl) fbEl.textContent = '連線至成績伺服器時發生錯誤，請按「重新整理成績」重試。';
       } finally {
         profBusy = false;
         if (icon) icon.classList.remove('animate-spin');
@@ -7703,8 +7806,13 @@ json.dumps({"steps": _steps, "error": _err, "finalOut": _buf.getvalue().strip()}
       if (reloginBtn && !reloginBtn.dataset.profBound) {
         reloginBtn.dataset.profBound = '1';
         reloginBtn.addEventListener('click', () => {
-          const profBtn = document.getElementById('studentProfileBtn');
-          if (profBtn) profBtn.click();
+          const errEl = document.getElementById('loginErrorMsg');
+          const stEl = document.getElementById('loginCloudStatus');
+          if (errEl) errEl.classList.add('hidden');
+          if (stEl) stEl.classList.add('hidden');
+          if (typeof updateGmailModalUI === 'function') updateGmailModalUI(true);
+          const modal = document.getElementById('loginModal');
+          if (modal) modal.classList.remove('hidden');
         });
       }
       const sel = document.getElementById('profTeacherStudentSelect');
